@@ -15,11 +15,11 @@ int main() {
 
     
     int count=0;
+    unsigned int key = 0x0020;
     while(1){
-
         terminal_clear();
         if (key_is_pressed()) {
-            int key = key_read();
+            key = key_read();
             // Handle the key input here
             switch(key){
                 case 'z':
@@ -40,7 +40,7 @@ int main() {
 
         }
         /// free(status->content);
-        snprintf(status->content,80,":::GAME::: x:%6d y:%6d,frame:%8d ",shape->x,shape->y,count);
+        snprintf(status->content,80,":::GAME::: [%c] x:%6d y:%6d,frame:%8d ",key, shape->x,shape->y,count);
         // Initialize and clear the screen buffer
         screen_clear(screen);
         screen_shape_draw(screen, shape);
