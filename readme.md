@@ -6,3 +6,8 @@ so far it is tested on *nix, it might however work under windows.
 
 # WIP
 
+## features
+ 
+ - user controled shape (done)
+ - animated shapes (in progress)
+ - collision detection (todo)
