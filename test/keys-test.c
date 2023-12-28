@@ -1,4 +1,6 @@
-#include "keys.c"
+#include "keys.h"
+#include <sys/types.h>
+#include <stdio.h>
 
 int main() {
     READKEY_INIT
