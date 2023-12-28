@@ -1,5 +1,8 @@
 
-#include "lib/lib.h"
+#include "lib/draw.h"
+#include "lib/viewport.h"
+#include "lib/shape.h"
+#include "lib/keys.h"
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -38,7 +41,7 @@ int main() {
     }
 
     READKEY_INIT
-    int result = system("xset r rate 50 50");
+    int result = system("xset r rate 30 30");
 
     // Create a vpp buffer
     Viewport* vpp=viewport_new(80,25);
@@ -101,7 +104,7 @@ int main() {
     sleep(1);
 
     READKEY_DEINIT
-    result = system("xset r rate 250 50");
+    result = system("xset r rate 250 30");
     sleep(1);
     printf(" - done \n");
     sleep(1);

@@ -1,3 +1,4 @@
+#include "keys.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,14 +6,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <termios.h> // Include termios header
-
-#define READKEY_INIT struct termios oldt,newt;\
-    tcgetattr(STDIN_FILENO, &oldt);\
-    newt = oldt;\
-    newt.c_lflag &= ~(ICANON | ECHO);\
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-#define READKEY_DEINIT tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 
 // Function to check if a key has been pressed (non-blocking)
 int key_is_pressed() {
