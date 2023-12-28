@@ -15,6 +15,7 @@ Viewport* vpp;
 
 // Create a scene manager
 SceneManager* manager;
+// declare behaviours
 Shape player_behaviour_next(Entity* e, int frame, char key);
 Shape foe_behaviour_next(Entity* e, int frame, char key);
 Shape bullet_behaviour(Entity* e, int frame, char key);
