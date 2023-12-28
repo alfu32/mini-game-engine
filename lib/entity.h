@@ -3,9 +3,10 @@
     #include "shape.h"
     #include <stdlib.h>
     #include <stdarg.h>
-
+    
+    typedef struct Entity Entity;
     // Define a function pointer type for shape transformation
-    typedef Shape (*ShapeTransform)(struct Shape*, int, char);
+    typedef Shape (*ShapeTransform)(struct Entity*, int, char);
 
     // Define a struct for an animated shape
     typedef struct Entity {

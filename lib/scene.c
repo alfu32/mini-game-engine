@@ -1,5 +1,7 @@
 #include "scene.h"
 #include "entity.h"
+#include "viewport.h"
+#include "draw.h"
 #include "keys.h"
 #include <stdlib.h>
 #include <string.h>
@@ -13,11 +15,11 @@ SceneManager* scene_manager_new() {
     return manager;
 }
 
-// Function to add a shape to the scene
-void scene_manager_add_shape(SceneManager* manager, Entity* shape) {
+// Function to add a entity to the scene
+void scene_manager_add_entity(SceneManager* manager, Entity* entity) {
     manager->entities_count++;
     manager->entities = realloc(manager->entities, manager->entities_count * sizeof(Entity*));
-    manager->entities[manager->entities_count - 1] = shape;
+    manager->entities[manager->entities_count - 1] = entity;
 }
 
 // Function to update all entities in the scene
@@ -27,9 +29,9 @@ void scene_manager_update(SceneManager* manager, int currentFrame) {
         key = key_read();
     }
     for (int i = 0; i < manager->entities_count; i++) {
-        Entity* shape = manager->entities[i];
-        Shape newShape = shape->next(shape->shape, currentFrame, key );
-        shape_copy(shape->shape, newShape);
+        Entity* entity = manager->entities[i];
+        Shape newShape = entity->next(entity, currentFrame, key );
+        shape_copy(entity->shape, newShape);
     }
 }
 // Function to remove dead shapes (life is 0) from the scene
@@ -57,7 +59,18 @@ void scene_manager_remove_dead_shapes(SceneManager* manager) {
     manager->entities = aliveShapes;
     manager->entities_count = aliveCount;
 }
+void scene_manager_draw_on_viewport(SceneManager* manager, Viewport* vp) {
+    if (manager == NULL || vp == NULL) {
+        return;
+    }
 
+    for (int i = 0; i < manager->entities_count; i++) {
+        Entity* entity = manager->entities[i];
+        if (entity != NULL && entity->shape != NULL) {
+            viewport_shape_draw(vp, entity->shape);
+        }
+    }
+}
 // Function to free the scene manager
 void scene_manager_free(SceneManager* manager) {
     for (int i = 0; i < manager->entities_count; i++) {
