@@ -22,6 +22,8 @@ Shape bullet_behaviour(Entity* e, int frame, char key);
 
 int foe_direction=1;
 
+int last_bullet=0;
+int last_cannon=0;
 
 // Define two different 'next' behaviors for the shapes
 Shape player_behaviour_next(Entity* e, int frame, char key) {
@@ -41,11 +43,30 @@ Shape player_behaviour_next(Entity* e, int frame, char key) {
         case 'x':
             sh.y+=1;
             break;
-        case 'h': {
-                Entity* bullet = entity_new(frame, sh.x, sh.y, "--->",bullet_behaviour);
+        case 'g': 
+            if(frame - last_cannon > 50){
+                Entity* bullet = entity_new(frame, sh.x+3, sh.y, "-==>",bullet_behaviour);
                 bullet->life=60;
                 // Add entities to the scene
                 scene_manager_add_entity(manager, bullet);
+
+
+
+
+                Entity* bullet2 = entity_new(frame, sh.x+3, sh.y+4, "-==>",bullet_behaviour);
+                bullet2->life=60;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet2);
+                last_cannon=frame;
+            }
+            break;
+        case 'h': 
+            if(frame - last_bullet > 10){
+                Entity* bullet = entity_new(frame, sh.x+5, sh.y+2, ":",bullet_behaviour);
+                bullet->life=60;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet);
+                last_bullet=frame;
             }
             break;
         case EOF:
@@ -79,6 +100,26 @@ Shape bullet_behaviour(Entity* e, int frame, char key) {
     }
     return sh;
 }
+Shape rolling_background_behaviour(Entity* e, int frame, char key) {
+    // Handle the key input here
+    Shape sh = {e->shape->x,e->shape->y,""};
+    sh.content=strdup(e->shape->content);
+    /// if(frame % 5 == 0){
+    ///     if((sh.x+1) >80){
+    ///         sh.x=-80;
+    ///     } else {
+    ///         sh.x=sh.x+1;
+    ///     }
+    /// }
+    if(frame % 5 == 0){
+        if((sh.x-1) <-80){
+            sh.x=80;
+        } else {
+            sh.x=sh.x-1;
+        }
+    }
+    return sh;
+}
 
 int running=1;
 
@@ -93,7 +134,48 @@ void signalHandler(int signum) {
     // Add your cleanup code here
     running=0;
 }
+const char* background="\
+                                                                       \n\
+               *                                                       \n\
+        *                                                              \n\
+                *                                     *                \n\
+         *           *          **                                     \n\
+                                **                                     \n\
+                         *      **                                     \n\
+                               +--+                                    \n\
+                               |  |                                    \n\
+                               |  |                                    \n\
+                               |  |          *                         \n\
+             ======            |  |                          +-------+ \n\
+         +----------+          |  |                      +---|       | \n\
+         | ________ |        +-+--+-+                    |   |       | \n\
+         | ________ |        |      |                    |   |       | \n\
+         | ________ |        |      |                    |   |       | \n\
+         | ________ |        |      |                    +---+-------+ \n\
+         | ________ |        |      |                    |           | \n\
+         | ________ |        |      |        ======================  | \n\
+    +------+_______ |      +-+------+-+         _+--------------+    | \n\
+    |      |_______ |      |          |         _| ____________ |    | \n\
+    |      |_______ |      |          |         _|              |    | \n\
+    |      |_______ |      |          |     _____| ____________ |    | \n\
+    |      |        |      |          |          |              |    | \n\
+=======================__================______========================\n\
+";
+const char* ship_shape="\
+  \\-\n\
+  \\\n\
+#====>\n\
+  /\n\
+ /-\n\
+";
 
+const char* foe_shape="\
+   ##\n\
+ -####\n\
+=#######\n\
+ -####\n\
+  ##\n\
+";
 int main() {
 
     // Register signal handlers
@@ -118,10 +200,14 @@ int main() {
     manager = scene_manager_new();
 
     // Create two entities (animated shapes) with different behaviors
-    Entity* entity1 = entity_new(0, 10, 10, "HooHooHoooo",player_behaviour_next);
-    Entity* entity2 = entity_new(0, 70, 10, "####",foe_behaviour_next);
+    Entity* bkg0 = entity_new(0, 80, 0, background,rolling_background_behaviour);
+    Entity* bkg1 = entity_new(0, 0, 0, background,rolling_background_behaviour);
+    Entity* entity1 = entity_new(0, 10, 10, ship_shape,player_behaviour_next);
+    Entity* entity2 = entity_new(0, 70, 10, foe_shape,foe_behaviour_next);
 
     // Add entities to the scene
+    scene_manager_add_entity(manager, bkg0);
+    scene_manager_add_entity(manager, bkg1);
     scene_manager_add_entity(manager, entity1);
     scene_manager_add_entity(manager, entity2);
     // Create a shape and draw it on the vpp
@@ -144,7 +230,7 @@ int main() {
         // Render the vpp
         viewport_renderer(vpp);
         frame++;
-        usleep(10000);
+        usleep(10*1000);
         scene_manager_remove_dead_shapes(manager);
     }
     printf(" - cleaning up \n");
