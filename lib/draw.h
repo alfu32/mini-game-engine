@@ -4,5 +4,8 @@
     #include "shape.h"
     void terminal_clear();
     void viewport_shape_draw(Viewport* screen, Shape* shape);
+    char** split_lines(const char* input, int* lineCount);
+    char* circular_offset_line(char* line);
+    char* circular_offset_string(const char* input);
 
 #endif
