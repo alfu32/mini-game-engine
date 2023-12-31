@@ -14,4 +14,5 @@
     int key_is_pressed();
     // Function to read a key if one is pressed (non-blocking)
     int key_read();
+    char* keys_get_pressed();
 #endif
