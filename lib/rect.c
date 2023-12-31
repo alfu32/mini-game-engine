@@ -4,7 +4,6 @@
     #include "shape.h"
     #include <string.h>
     #include <stddef.h>
-    #include <stdbool.h>
 
     size_t countLines(const char* string) {
         if (string == NULL) {
@@ -73,7 +72,7 @@
         struct ClientRect rect={.x=shape->x,.y=shape->y,.width=shapeWidth,.height=shapeHeight};
         return rect;
     }
-    bool rectanglesIntersect(const struct ClientRect* rect1, const struct ClientRect* rect2) {
+    int rectanglesIntersect(const struct ClientRect* rect1, const struct ClientRect* rect2) {
         int x1 = rect1->x;
         int y1 = rect1->y;
         int x2 = x1 + rect1->width;
@@ -86,15 +85,15 @@
 
         // Check if one rectangle is to the left of the other
         if (x2 < x3 || x4 < x1) {
-            return false;
+            return 0;
         }
 
         // Check if one rectangle is above the other
         if (y2 < y3 || y4 < y1) {
-            return false;
+            return 0;
         }
 
-        return true; // Rectangles intersect
+        return 1; // Rectangles intersect
     }
 
 #endif
