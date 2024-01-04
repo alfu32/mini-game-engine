@@ -1,0 +1,7 @@
+#!/bin/bash
+
+file_name=$(basename "$1")
+./mk $1
+./"$file_name"
+
+
