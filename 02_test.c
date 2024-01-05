@@ -25,6 +25,7 @@ int foe_direction=1;
 
 int last_bullet=0;
 int last_cannon=0;
+int last_move=0;
 
 // Define two different 'next' behaviors for the shapes
 Shape player_behaviour_next(Entity* e, int frame, char *keys) {
@@ -32,47 +33,68 @@ Shape player_behaviour_next(Entity* e, int frame, char *keys) {
     Shape sh = {e->shape->x,e->shape->y,""};
     sh.content=strdup(e->shape->content);
 
-    if(strchr(keys,'z') != NULL){
-        sh.x-=1;
-    }
+    if(keys != NULL){
 
-    if(strchr(keys,'c') != NULL){
-        sh.x+=1;
-    }
+        if(frame - last_move > 5){
+            if(strchr(keys,'z') != NULL){
+                sh.x-=1;
+                if(sh.x<0){
+                    sh.x=0;
+                }
+                last_move=frame;
+            }
 
-    if(strchr(keys,'s') != NULL){
-        sh.y-=1;
-    }
+            if(strchr(keys,'c') != NULL){
+                sh.x+=1;
+                if(sh.x>80){
+                    sh.x=80;
+                }
+                last_move=frame;
+            }
 
-    if(strchr(keys,'x') != NULL){
-        sh.y+=1;
-    }
+            if(strchr(keys,'s') != NULL){
+                sh.y-=1;
+                if(sh.y<0){
+                    sh.y=0;
+                }
+                last_move=frame;
+            }
 
-    if(strchr(keys,'g') != NULL){
-        if(frame - last_cannon > 50){
-            Entity* bullet = entity_new(frame, sh.x+3, sh.y, "-==>",bullet_behaviour,5,0);
-            bullet->life=60;
-            // Add entities to the scene
-            scene_manager_add_entity(manager, bullet);
-
-
-
-
-            Entity* bullet2 = entity_new(frame, sh.x+3, sh.y+4, "-==>",bullet_behaviour,5,0);
-            bullet2->life=60;
-            // Add entities to the scene
-            scene_manager_add_entity(manager, bullet2);
-            last_cannon=frame;
+            if(strchr(keys,'x') != NULL){
+                sh.y+=1;
+                if(sh.y>20){
+                    sh.y=20;
+                }
+                last_move=frame;
+            }
         }
-    }
 
-    if(strchr(keys,'h') != NULL){
-        if(frame - last_bullet > 10){
-            Entity* bullet = entity_new(frame, sh.x+5, sh.y+2, ":",bullet_behaviour,6,0);
-            bullet->life=60;
-            // Add entities to the scene
-            scene_manager_add_entity(manager, bullet);
-            last_bullet=frame;
+        if(strchr(keys,'g') != NULL){
+            if(frame - last_cannon > 30){
+                Entity* bullet = entity_new(frame, sh.x+3, sh.y, "-==>",bullet_behaviour,5,0);
+                bullet->life=60;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet);
+
+
+
+
+                Entity* bullet2 = entity_new(frame, sh.x+3, sh.y+4, "-==>",bullet_behaviour,5,0);
+                bullet2->life=60;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet2);
+                last_cannon=frame;
+            }
+        }
+
+        if(strchr(keys,'h') != NULL){
+            if(frame - last_bullet > 10){
+                Entity* bullet = entity_new(frame, sh.x+5, sh.y+2, ":",bullet_behaviour,6,0);
+                bullet->life=60;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet);
+                last_bullet=frame;
+            }
         }
     }
     return sh;
@@ -173,6 +195,12 @@ const char* foe_shape="\
   ##\n\
 ";
 int main() {
+    // Create a Keyboard object
+    Keyboard *keyboard = keyboard_new();
+    if (keyboard == NULL) {
+        fprintf(stderr, "Failed to initialize Keyboard\n");
+        return 1;
+    }
 
     // Register signal handlers
     if (signal(SIGINT, signalHandler) == SIG_ERR) {
@@ -184,9 +212,7 @@ int main() {
         perror("Unable to register SIGTERM handler");
         return 1;
     }
-
-    READKEY_INIT
-    int result = system("xset r rate 50 50");
+    // int result = system("xset r rate 50 50");
 
 
     // Create a vpp buffer
@@ -216,10 +242,14 @@ int main() {
     while(running){
 
 
-        char *pressed = keys_get_pressed();
         terminal_clear();
+        char *pressed = keyboard_get_pressed(keyboard);
         /// free(status->content);
-        shape_set_fmt(status,":::GAME::: [%s] x:%6d y:%6d,frame:%8d, objects:%2d",pressed, shape->x,shape->y,frame,manager->entities_count);
+        /// if(pressed != NULL){
+        ///     shape_set_fmt(status,":::GAME::: [%s] x:%6d y:%6d,frame:%8d, objects:%2d",pressed, shape->x,shape->y,frame,manager->entities_count);
+        /// } else {
+            shape_set_fmt(status,":::GAME::: x:%6d y:%6d,frame:%8d, objects:%2d", shape->x,shape->y,frame,manager->entities_count);
+        /// }
         // Initialize and clear the vpp buffer
         viewport_clear(vpp);
         scene_manager_update(manager, frame,pressed);
@@ -227,11 +257,14 @@ int main() {
         scene_manager_draw_on_viewport(manager,vpp);
         // Render the vpp
         viewport_renderer(vpp);
+        scene_manager_do_collisions(manager);
         frame++;
-        usleep(5*1000);
+        usleep(9*1000);
         scene_manager_remove_dead_shapes(manager);
 
-        free(pressed);
+        if(pressed != NULL){
+            free(pressed);
+        }
     }
     printf(" - cleaning up \n");
     sleep(1);
@@ -248,8 +281,8 @@ int main() {
     printf(" - resetting terminal \n");
     sleep(1);
 
-    READKEY_DEINIT
-    result = system("xset r rate 250 50");
+    // Clean up and exit
+    keyboard_deinit(keyboard);
     sleep(1);
     printf(" - done \n");
     sleep(1);

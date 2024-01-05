@@ -4,6 +4,7 @@
     #include <linux/input.h>
 
     #define KEYBOARD_MAX_DEVICES 128
+    /// dchar* KEYBOARD_NOKEYS="---\0";
 
     typedef struct Keyboard {
         int num_devices;
@@ -12,6 +13,8 @@
         char **device_paths;
         int *index000;
         char key_state[KEY_MAX];
+        int device;
+        struct input_event ev;
     } Keyboard;
 
     Keyboard* keyboard_new();

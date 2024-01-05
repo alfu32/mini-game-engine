@@ -59,45 +59,44 @@
             viewport->backgrounds[y][x] = fg;
         }
     }
-
+    const char* colors[]={
+        COLOR_RESET,          /// 0
+        COLOR_RED,            /// 1
+        COLOR_GREEN,          /// 2
+        COLOR_YELLOW,         /// 3
+        COLOR_BLUE,           /// 4
+        COLOR_MAGENTA,        /// 5
+        COLOR_CYAN,           /// 6
+        COLOR_WHITE,          /// 7
+        COLOR_BRIGHT_BLACK,   /// 8
+        COLOR_BRIGHT_RED,     /// 9
+        COLOR_BRIGHT_GREEN,   /// 10
+        COLOR_BRIGHT_YELLOW,  /// 11
+        COLOR_BRIGHT_BLUE,    /// 12
+        COLOR_BRIGHT_MAGENTA, /// 13
+        COLOR_BRIGHT_CYAN,    /// 14
+        COLOR_BRIGHT_WHITE    /// 15
+    };
+    const char* backgrounds[]={
+        BACKGROUND_COLOR_BLACK,          /// 0 
+        BACKGROUND_COLOR_RED,            /// 1 
+        BACKGROUND_COLOR_GREEN,          /// 2 
+        BACKGROUND_COLOR_YELLOW,         /// 3 
+        BACKGROUND_COLOR_BLUE,           /// 4 
+        BACKGROUND_COLOR_MAGENTA,        /// 5 
+        BACKGROUND_COLOR_CYAN,           /// 6 
+        BACKGROUND_COLOR_WHITE,          /// 7 
+        BACKGROUND_BRIGHT_COLOR_BLACK,   /// 8 
+        BACKGROUND_BRIGHT_COLOR_RED,     /// 9 
+        BACKGROUND_BRIGHT_COLOR_GREEN,   /// 10 
+        BACKGROUND_BRIGHT_COLOR_YELLOW,  /// 11 
+        BACKGROUND_BRIGHT_COLOR_BLUE,    /// 12 
+        BACKGROUND_BRIGHT_COLOR_MAGENTA, /// 13 
+        BACKGROUND_BRIGHT_COLOR_CYAN,    /// 14 
+        BACKGROUND_BRIGHT_COLOR_WHITE    /// 15 
+    };
     // Function to render the viewport buffer to the terminal
     void viewport_renderer(const Viewport* viewport) {
-        const char* colors[]={
-            COLOR_RESET,          /// 0
-            COLOR_RED,            /// 1
-            COLOR_GREEN,          /// 2
-            COLOR_YELLOW,         /// 3
-            COLOR_BLUE,           /// 4
-            COLOR_MAGENTA,        /// 5
-            COLOR_CYAN,           /// 6
-            COLOR_WHITE,          /// 7
-            COLOR_BRIGHT_BLACK,   /// 8
-            COLOR_BRIGHT_RED,     /// 9
-            COLOR_BRIGHT_GREEN,   /// 10
-            COLOR_BRIGHT_YELLOW,  /// 11
-            COLOR_BRIGHT_BLUE,    /// 12
-            COLOR_BRIGHT_MAGENTA, /// 13
-            COLOR_BRIGHT_CYAN,    /// 14
-            COLOR_BRIGHT_WHITE    /// 15
-        };
-        const char* backgrounds[]={
-            BACKGROUND_COLOR_BLACK,          /// 0 
-            BACKGROUND_COLOR_RED,            /// 1 
-            BACKGROUND_COLOR_GREEN,          /// 2 
-            BACKGROUND_COLOR_YELLOW,         /// 3 
-            BACKGROUND_COLOR_BLUE,           /// 4 
-            BACKGROUND_COLOR_MAGENTA,        /// 5 
-            BACKGROUND_COLOR_CYAN,           /// 6 
-            BACKGROUND_COLOR_WHITE,          /// 7 
-            BACKGROUND_BRIGHT_COLOR_BLACK,   /// 8 
-            BACKGROUND_BRIGHT_COLOR_RED,     /// 9 
-            BACKGROUND_BRIGHT_COLOR_GREEN,   /// 10 
-            BACKGROUND_BRIGHT_COLOR_YELLOW,  /// 11 
-            BACKGROUND_BRIGHT_COLOR_BLUE,    /// 12 
-            BACKGROUND_BRIGHT_COLOR_MAGENTA, /// 13 
-            BACKGROUND_BRIGHT_COLOR_CYAN,    /// 14 
-            BACKGROUND_BRIGHT_COLOR_WHITE    /// 15 
-        };
         putchar('+');
         for (int x = 0; x < viewport->width; x++) {
             putchar('-');
@@ -106,6 +105,7 @@
         putchar('\n');
         for (int y = 0; y < viewport->height; y++) {
             putchar('|');
+            int last_color=0;
             for (int x = 0; x < viewport->width; x++) {
                 char colored=0;
                 //// if(viewport->backgrounds[y][x]){
@@ -114,13 +114,13 @@
                 //// }
                 if(viewport->colors[y][x]){
                     printf("%s",colors[viewport->colors[y][x]]);
-                    colored=1;
                 }
                 putchar(viewport->buffer[y][x]);
-                if(colored){
+                if(viewport->colors[y][x] && viewport->colors[y][x] != viewport->colors[y][x+1]){
                     printf("%s",COLOR_RESET);
                 }
             }
+            printf("%s",COLOR_RESET);
             putchar('|');
             putchar('\n');
         }

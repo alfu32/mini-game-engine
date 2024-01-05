@@ -1,7 +1,11 @@
 #!/bin/bash
 
-file_name=$(basename "$1")
-./mk $1
-./"$file_name"
+
+full_name="$1"
+file_name=$(basename "$full_name")
+file_name_without_extension="${file_name%.*}"
+
+./mk $full_name
+./"$file_name_without_extension"
 
 

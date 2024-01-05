@@ -5,6 +5,7 @@
     #include "viewport.h"
     #include "draw.h"
     #include "keys.h"
+    #include "rect.h"
     #include <stdlib.h>
     #include <string.h>
 
@@ -36,6 +37,15 @@
             Shape newShape = entity->next(entity, currentFrame, keys );
             shape_copy(entity->shape, newShape);
         }
+    }
+    // Function to remove dead shapes (life is 0) from the scene
+    void scene_manager_do_collisions(SceneManager* manager) {
+        ClientRect* rects = (ClientRect*)malloc(sizeof(ClientRect)*manager->entities_count);
+        for (int i = 0; i < manager->entities_count; i++) {
+            rects[i]=get_bounding_client_rect(manager->entities[i]->shape);
+        }
+
+        free(rects);
     }
     // Function to remove dead shapes (life is 0) from the scene
     void scene_manager_remove_dead_shapes(SceneManager* manager) {
