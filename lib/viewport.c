@@ -32,8 +32,8 @@
     Viewport* viewport_new(int width,int height) {
         // Create a viewport buffer
         struct Viewport* viewport=(Viewport*)malloc(sizeof(Viewport));
-        viewport->width = 80;  // Adjust to your desired viewport width
-        viewport->height = 24; // Adjust to your desired viewport height
+        viewport->width = width;  // Adjust to your desired viewport width
+        viewport->height = height; // Adjust to your desired viewport height
 
         // Allocate memory for the viewport buffer
         viewport_alloc(viewport);
