@@ -17,14 +17,17 @@ Viewport* vpp;
 SceneManager* manager;
 // declare behaviours
 Shape player_behaviour_next(Entity* e, int frame, char* keys);
+Shape player1_behaviour_next(Entity* e, int frame, char* keys);
 Shape foe_behaviour_next(Entity* e, int frame, char* keys);
 Shape bullet_behaviour(Entity* e, int frame, char* keys);
+Shape counter_bullet_behaviour(Entity* e, int frame, char* keys);
 Shape foe_bullet_behaviour(Entity* e, int frame, char* keys);
 
 int foe_direction=1;
 
 int last_bullet=0;
 int last_cannon=0;
+int last_counter_cannon=0;
 int last_move=0;
 
 // Define two different 'next' behaviors for the shapes
@@ -36,7 +39,7 @@ Shape player_behaviour_next(Entity* e, int frame, char *keys) {
     if(keys != NULL){
 
         if(frame - last_move > 5){
-            if(strchr(keys,'z') != NULL){
+            if(strchr(keys,'a') != NULL){
                 sh.x-=1;
                 if(sh.x<0){
                     sh.x=0;
@@ -44,7 +47,7 @@ Shape player_behaviour_next(Entity* e, int frame, char *keys) {
                 last_move=frame;
             }
 
-            if(strchr(keys,'c') != NULL){
+            if(strchr(keys,'d') != NULL){
                 sh.x+=1;
                 if(sh.x>80){
                     sh.x=80;
@@ -52,7 +55,7 @@ Shape player_behaviour_next(Entity* e, int frame, char *keys) {
                 last_move=frame;
             }
 
-            if(strchr(keys,'s') != NULL){
+            if(strchr(keys,'w') != NULL){
                 sh.y-=1;
                 if(sh.y<0){
                     sh.y=0;
@@ -60,7 +63,7 @@ Shape player_behaviour_next(Entity* e, int frame, char *keys) {
                 last_move=frame;
             }
 
-            if(strchr(keys,'x') != NULL){
+            if(strchr(keys,'s') != NULL){
                 sh.y+=1;
                 if(sh.y>20){
                     sh.y=20;
@@ -69,31 +72,133 @@ Shape player_behaviour_next(Entity* e, int frame, char *keys) {
             }
         }
 
-        if(strchr(keys,'g') != NULL){
-            if(frame - last_cannon > 30){
+        if(strchr(keys,'z') != NULL){
+            if(frame - last_cannon > 29){
                 Entity* bullet = entity_new(frame, sh.x+3, sh.y, "-==>",bullet_behaviour,5,0);
-                bullet->life=60;
+                bullet->life=200;
                 // Add entities to the scene
                 scene_manager_add_entity(manager, bullet);
 
-
-
-
                 Entity* bullet2 = entity_new(frame, sh.x+3, sh.y+4, "-==>",bullet_behaviour,5,0);
-                bullet2->life=60;
+                bullet2->life=200;
                 // Add entities to the scene
                 scene_manager_add_entity(manager, bullet2);
                 last_cannon=frame;
             }
         }
 
-        if(strchr(keys,'h') != NULL){
-            if(frame - last_bullet > 10){
+        if(strchr(keys,'x') != NULL){
+            if(frame - last_counter_cannon > 37){
+                Entity* bullet = entity_new(frame, sh.x+3, sh.y+1, "+",bullet_behaviour,2,0);
+                bullet->life=80;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet);
+
+                Entity* bullet2 = entity_new(frame, sh.x+3, sh.y+3, "+",bullet_behaviour,2,0);
+                bullet2->life=80;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet2);
+                last_counter_cannon=frame;
+            }
+        }
+
+        if(strchr(keys,'c') != NULL){
+            if(frame - last_bullet > 13){
                 Entity* bullet = entity_new(frame, sh.x+5, sh.y+2, ":",bullet_behaviour,6,0);
-                bullet->life=60;
+                bullet->life=100;
                 // Add entities to the scene
                 scene_manager_add_entity(manager, bullet);
                 last_bullet=frame;
+            }
+        }
+    }
+    return sh;
+}
+
+
+int last_bullet1=0;
+int last_cannon1=0;
+int last_counter_cannon1=0;
+int last_move1=0;
+// Define two different 'next' behaviors for the shapes
+Shape player1_behaviour_next(Entity* e, int frame, char *keys) {
+    // Handle the key input here
+    Shape sh = {e->shape->x,e->shape->y,""};
+    sh.content=strdup(e->shape->content);
+
+    if(keys != NULL){
+
+        if(frame - last_move1> 5){
+            if(strchr(keys,'j') != NULL){
+                sh.x-=1;
+                if(sh.x<0){
+                    sh.x=0;
+                }
+                last_move1=frame;
+            }
+
+            if(strchr(keys,'l') != NULL){
+                sh.x+=1;
+                if(sh.x>80){
+                    sh.x=80;
+                }
+                last_move1=frame;
+            }
+
+            if(strchr(keys,'i') != NULL){
+                sh.y-=1;
+                if(sh.y<0){
+                    sh.y=0;
+                }
+                last_move1=frame;
+            }
+
+            if(strchr(keys,'k') != NULL){
+                sh.y+=1;
+                if(sh.y>20){
+                    sh.y=20;
+                }
+                last_move1=frame;
+            }
+        }
+
+        if(strchr(keys,'n') != NULL){
+            if(frame - last_cannon1 > 29){
+                Entity* bullet = entity_new(frame, sh.x+3, sh.y, "-==>",bullet_behaviour,5,0);
+                bullet->life=200;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet);
+
+                Entity* bullet2 = entity_new(frame, sh.x+3, sh.y+4, "-==>",bullet_behaviour,5,0);
+                bullet2->life=200;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet2);
+                last_cannon1=frame;
+            }
+        }
+
+        if(strchr(keys,'m') != NULL){
+            if(frame - last_counter_cannon1 > 37){
+                Entity* bullet = entity_new(frame, sh.x+3, sh.y+1, "+",bullet_behaviour,2,0);
+                bullet->life=80;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet);
+
+                Entity* bullet2 = entity_new(frame, sh.x+3, sh.y+3, "+",bullet_behaviour,2,0);
+                bullet2->life=80;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet2);
+                last_counter_cannon1=frame;
+            }
+        }
+
+        if(strchr(keys,',') != NULL){
+            if(frame - last_bullet1 > 13){
+                Entity* bullet = entity_new(frame, sh.x+5, sh.y+2, ":",bullet_behaviour,6,0);
+                bullet->life=100;
+                // Add entities to the scene
+                scene_manager_add_entity(manager, bullet);
+                last_bullet1=frame;
             }
         }
     }
@@ -105,13 +210,19 @@ Shape foe_behaviour_next(Entity* e, int frame, char *keys) {
     // Handle the key input here
     Shape sh = {e->shape->x,e->shape->y,""};
     sh.content=strdup(e->shape->content);
-    if(sh.y+foe_direction>23){
+    if(sh.y+foe_direction>20){
         foe_direction=-1;
     }else if(sh.y+foe_direction<1){
         foe_direction=1;
     }
     if(frame % 5 == 0){
         sh.y=sh.y+foe_direction;
+    }
+    if(frame % 50 == 0){
+        Entity* rocket = entity_new(frame, sh.x+5, sh.y+2, "<==",counter_bullet_behaviour,3,0);
+        rocket->life=60;
+        // Add entities to the scene
+        scene_manager_add_entity(manager, rocket);
     }
     return sh;
 }
@@ -125,13 +236,24 @@ Shape bullet_behaviour(Entity* e, int frame, char *keys) {
     }
     return sh;
 }
+Shape counter_bullet_behaviour(Entity* e, int frame, char *keys) {
+    // Handle the key input here
+    Shape sh = {e->shape->x,e->shape->y,""};
+    sh.content=strdup(e->shape->content);
+    if(frame % 2 == 0){
+        sh.x=sh.x-1;
+        e->life=e->life-1;
+    }
+    return sh;
+}
 Shape rolling_background_behaviour(Entity* e, int frame, char *keys) {
     // Handle the key input here
     Shape sh = {e->shape->x,e->shape->y,""};
     sh.content=strdup(e->shape->content);
     if(frame % 5 == 0){
         if((sh.x-1) <-80){
-            sh.x=80;
+            sh.x=160;
+            e->color=(e->color+1)%8;
         } else {
             sh.x=sh.x-1;
         }
@@ -216,21 +338,25 @@ int main() {
 
 
     // Create a vpp buffer
-    vpp=viewport_new(80,25);
+    vpp=viewport_new(160,25);
 
     // Create a scene manager
     manager = scene_manager_new();
 
     // Create two entities (animated shapes) with different behaviors
-    Entity* bkg0 = entity_new(0, 80, 0, background,rolling_background_behaviour,2,1);
-    Entity* bkg1 = entity_new(0, 0, 0, background,rolling_background_behaviour,2,1);
-    Entity* entity1 = entity_new(0, 10, 10, ship_shape,player_behaviour_next,4,1);
-    Entity* entity2 = entity_new(0, 70, 10, foe_shape,foe_behaviour_next,1,1);
+    Entity* bkg0 = entity_new(0, 160, 0, background,rolling_background_behaviour,2,1);
+    Entity* bkg1 = entity_new(0, 80, 0, background,rolling_background_behaviour,2,1);
+    Entity* bkg2 = entity_new(0, 0, 0, background,rolling_background_behaviour,2,1);
+    Entity* player = entity_new(0, 10, 10, ship_shape,player_behaviour_next,4,1);
+    Entity* player1 = entity_new(0, 10, 10, ship_shape,player1_behaviour_next,5,1);
+    Entity* entity2 = entity_new(0, 140, 10, foe_shape,foe_behaviour_next,1,1);
 
     // Add entities to the scene
     scene_manager_add_entity(manager, bkg0);
     scene_manager_add_entity(manager, bkg1);
-    scene_manager_add_entity(manager, entity1);
+    scene_manager_add_entity(manager, bkg2);
+    scene_manager_add_entity(manager, player);
+    scene_manager_add_entity(manager, player1);
     scene_manager_add_entity(manager, entity2);
     // Create a shape and draw it on the vpp
     Shape* shape=shape_new(10,5,"HooHooHooo");
