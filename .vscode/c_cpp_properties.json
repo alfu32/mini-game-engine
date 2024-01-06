@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/libevdev-1.0"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/tcc",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64"
+        },
+        {
+            "name": "Linux-tcc",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/libevdev-1.0"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/tcc",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

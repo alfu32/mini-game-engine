@@ -1,0 +1,1 @@
+tcc 00_test_kb_ncurses.c lib/*.c -lncurses -o 00_test_kb_ncurses

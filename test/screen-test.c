@@ -36,7 +36,7 @@ int main() {
         // Initialize and clear the vp buffer
         viewport_init(&vp);
         shape.x=shape.x+1;
-        viewport_shape_draw(&vp, &shape);
+        viewport_shape_draw(&vp, &shape,1,0);
 
         // Render the vp
         viewport_renderer(&vp);

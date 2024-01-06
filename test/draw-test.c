@@ -84,8 +84,8 @@ int main() {
         shape_set_fmt(status,":::GAME::: [%c] x:%6d y:%6d,frame:%8d ",key, shape->x,shape->y,count);
         // Initialize and clear the vpp buffer
         viewport_clear(vpp);
-        viewport_shape_draw(vpp, shape);
-        viewport_shape_draw(vpp, status);
+        viewport_shape_draw(vpp, shape,1,0);
+        viewport_shape_draw(vpp, status,2,0);
         // Render the vpp
         viewport_renderer(vpp);
         count++;
