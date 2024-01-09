@@ -3,7 +3,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include <libevdev/libevdev.h>
+    #include <libevdev-1.0/libevdev/libevdev.h>
     #include <dirent.h>
     #include <fcntl.h>
     #include <unistd.h>
@@ -70,8 +70,9 @@
         }
     }
 
-    Keyboard* keyboard_new() {
+    Keyboard* keyboard_new(const char* device_path) {
         Keyboard *keyboard = (Keyboard *)malloc(sizeof(Keyboard));
+        keyboard->device_path=strdup(device_path);
         tcgetattr(STDIN_FILENO, &(keyboard->oldt));
         keyboard->newt = keyboard->oldt;
         keyboard->newt.c_lflag &= ~(ICANON | ECHO);
@@ -97,7 +98,7 @@
 
         memset(keyboard->key_state, 0, sizeof(keyboard->key_state));
 
-        int num_keyboards = find_keyboard_devices(keyboard->device_paths);
+        int num_keyboards = find_keyboard_devices(keyboard,keyboard->device_paths);
 
         if (num_keyboards < 0) {
             fprintf(stderr, "Error finding keyboard devices\n");
@@ -111,7 +112,7 @@
 
 
         // Open the input event device (replace '/dev/input/eventX' with your device)
-        int fd = open("/dev/input/event19", O_RDONLY | O_NONBLOCK);
+        int fd = open(device_path, O_RDONLY | O_NONBLOCK);
         if (fd == -1) {
             perror("Error opening input device");
             exit(1);
@@ -121,12 +122,8 @@
         return keyboard;
     }
 
-    int is_keyboard(const char *device_path) {
-        if (strcmp(device_path, "/dev/input/event19") == 0) {
-            return 1;
-        } else {
-            return 0;
-        }
+    int is_keyboard(Keyboard *kb,const char *device_path) {
+        return strcmp(device_path, kb->device_path) == 0;
 
         /////////// struct libevdev *dev = NULL;
         /////////// int fd = open(device_path, O_RDONLY | O_NONBLOCK);
@@ -152,7 +149,7 @@
         /////////// return is_keyboard;
     }
 
-    int find_keyboard_devices(char **device_paths) {
+    int find_keyboard_devices(Keyboard *kb,char **device_paths) {
         DIR *dir;
         struct dirent *entry;
         int num_keyboards = 0;
@@ -169,8 +166,9 @@
                 char device_path[256];
                 snprintf(device_path, sizeof(device_path), "/dev/input/%s", entry->d_name);
 
-                    printf("checking keyboard  %s : ", device_path);
-                if (is_keyboard(device_path)) {
+                    printf("checking keyboard  [%s]/[%s] : ", device_path,kb->device_path);
+                // if (is_keyboard(kb,device_path)) {
+                if ( 0 == strcmp(kb->device_path,device_path)) {
                     printf("YES\n");
                     device_paths[num_keyboards] = strdup(device_path);
                     num_keyboards++;
@@ -280,6 +278,7 @@
         }
 
         free(self->device_paths);
+        free(self->device_path);
         free(self);
 
         return 0;

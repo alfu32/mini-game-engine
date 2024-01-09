@@ -12,6 +12,8 @@
         entity->shape = shape_new(x0,y0,content);
         entity->birth_frame = birthFrame;
         entity->life = 1;
+        entity->power=1;
+        entity->collision=1;
         entity->color=color;
         entity->background=background;
         entity->next = transformFunc;
@@ -26,5 +28,26 @@
         }
         entity->shape = NULL;
         free(entity);
+    }
+    void entity__print(Entity* entity) {
+        printf("Entity {\n\
+            type        : %d\n\
+            shape       : %s\n\
+            birth_frame : %d\n\
+            life        : %d\n\
+            power       : %d\n\
+            collision   : %d\n\
+            color       : %d\n\
+            background  : %d\n\
+        }\n",
+            entity->type,
+            entity->shape,
+            entity->birth_frame,
+            entity->life,
+            entity->power,
+            entity->collision,
+            entity->color,
+            entity->background
+        );
     }
 #endif

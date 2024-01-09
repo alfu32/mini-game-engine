@@ -8,6 +8,12 @@
         int entities_count;         // Number of entities in the scene
     } SceneManager;
 
+    // Define a struct that contains object that are colliding
+    typedef struct EntityCollision {
+        Entity* a;
+        Entity* b;
+    } EntityCollision;
+
     SceneManager* scene_manager_new();
     void scene_manager_add_entity(SceneManager* manager, Entity* entity);
     void scene_manager_update(SceneManager* manager, int currentFrame,char pressed[10]);

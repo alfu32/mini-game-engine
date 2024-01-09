@@ -3,6 +3,7 @@
     #include "shape.h"
     #include <stdlib.h>
     #include <stdarg.h>
+    #include <stdio.h>
 
     typedef struct Entity Entity;
     // Define a function pointer type for shape transformation
@@ -25,6 +26,8 @@
         struct Shape* shape;
         int birth_frame;
         int life;
+        int power;
+        int collision;
         char color;
         char background;
         ShapeTransform next;
@@ -32,5 +35,6 @@
 
     Entity* entity_new(int birthFrame,int x0, int y0, const char* content, ShapeTransform transformFunc,const char color,const char background);
     void entity_dealloc(Entity* entity);
+    void entity__print(Entity* entity);
 
 #endif

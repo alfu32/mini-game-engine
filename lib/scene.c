@@ -40,12 +40,43 @@
     }
     // Function to remove dead shapes (life is 0) from the scene
     void scene_manager_do_collisions(SceneManager* manager) {
-        ClientRect* rects = (ClientRect*)malloc(sizeof(ClientRect)*manager->entities_count);
+        EntityCollision* collisions = (EntityCollision*)malloc(sizeof(EntityCollision)*(manager->entities_count)*(manager->entities_count));
+        unsigned int collision_count=0;
         for (int i = 0; i < manager->entities_count; i++) {
-            rects[i]=get_bounding_client_rect(manager->entities[i]->shape);
+            if(i>0){
+                for(int j=0;j<i;j++){
+                    Entity* ea = manager->entities[i];
+                    Entity* eb = manager->entities[j];
+                    ClientRect* a = get_bounding_client_rect(ea->shape);
+                    ClientRect* b = get_bounding_client_rect(eb->shape);
+                    if(ea->collision && eb->collision && client_rect__intersects(a,b)){
+                        EntityCollision cl;
+                        cl.a=ea;
+                        cl.b=eb;
+                        collisions[collision_count++]=cl;
+                    }
+                    free(a);
+                    free(b);
+                }
+            }
         }
+        for(int k=0;k<collision_count;k++){
+            Entity* a=collisions[k].a;
+            Entity* b=collisions[k].b;
+            int la = a->power;
+            int lb = b->power;
+            a->life-=lb;
+            b->life-=la;
+            if ( a->life < 0 ) {
+                a->life = 0;
+            }
+            if ( b->life < 0 ) {
+                b->life = 0;
+            }
+        }
+        
 
-        free(rects);
+        free(collisions);
     }
     // Function to remove dead shapes (life is 0) from the scene
     void scene_manager_remove_dead_shapes(SceneManager* manager) {
@@ -79,7 +110,7 @@
 
         for (int i = 0; i < manager->entities_count; i++) {
             Entity* entity = manager->entities[i];
-            if (entity != NULL && entity->shape != NULL) {
+            if (entity != NULL && entity->life > 0 && entity->shape != NULL) {
                 viewport_shape_draw(vp, entity->shape,entity->color,entity->background);
             }
         }

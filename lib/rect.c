@@ -3,6 +3,7 @@
     #include "rect.h"
     #include "shape.h"
     #include <string.h>
+    #include <stdlib.h>
     #include <stddef.h>
 
     size_t countLines(const char* string) {
@@ -61,18 +62,36 @@
         return maxWidth;
     }
 
-    ClientRect get_bounding_client_rect(Shape* shape) {
+    ClientRect* get_bounding_client_rect(Shape* shape) {
+        ClientRect *r = (ClientRect*)malloc(sizeof(ClientRect));
         if (shape == NULL) {
-            ClientRect cr={.x=0,.y=0,.width=0,.height=0};
-            return cr;
+            r->x=0;
+            r->y=0;
+            r->width=-1;
+            r->height=-1;
+            return r;
         }
         int shapeWidth=findMaxLineWidth(shape->content);
         int shapeHeight=countLines(shape->content);
 
         struct ClientRect rect={.x=shape->x,.y=shape->y,.width=shapeWidth,.height=shapeHeight};
-        return rect;
+            r->x=shape->x;
+            r->y=shape->y;
+            r->width=shapeWidth;
+            r->height=shapeHeight;
+        return r;
     }
-    int rectanglesIntersect(const struct ClientRect* rect1, const struct ClientRect* rect2) {
+    int client_rect__static__between(int x, int a, int b) {
+        return a<=x && x<=b;
+    }
+    int client_rect__contains_point(const struct ClientRect* rect1, int x3, int y3) {
+        int x1 = rect1->x;
+        int y1 = rect1->y;
+        int x2 = x1 + rect1->width;
+        int y2 = y1 + rect1->height;
+        return client_rect__static__between(x3,x1,x2) && client_rect__static__between(y3,y1,y2);
+    }
+    int client_rect__intersects(const struct ClientRect* rect1, const struct ClientRect* rect2) {
         int x1 = rect1->x;
         int y1 = rect1->y;
         int x2 = x1 + rect1->width;
@@ -82,18 +101,15 @@
         int y3 = rect2->y;
         int x4 = x3 + rect2->width;
         int y4 = y3 + rect2->height;
-
-        // Check if one rectangle is to the left of the other
-        if (x2 < x3 || x4 < x1) {
-            return 0;
-        }
-
-        // Check if one rectangle is above the other
-        if (y2 < y3 || y4 < y1) {
-            return 0;
-        }
-
-        return 1; // Rectangles intersect
+        
+        return client_rect__contains_point(rect1,x3,y3) 
+            || client_rect__contains_point(rect1,x4,y3) 
+            || client_rect__contains_point(rect1,x4,y4) 
+            || client_rect__contains_point(rect1,x3,y4) 
+            || client_rect__contains_point(rect2,x1,y1) 
+            || client_rect__contains_point(rect2,x2,y1) 
+            || client_rect__contains_point(rect2,x2,y2) 
+            || client_rect__contains_point(rect2,x1,y2);
     }
 
 #endif
