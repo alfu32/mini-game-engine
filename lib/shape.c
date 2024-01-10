@@ -1,22 +1,24 @@
 #ifndef SHAPE_C
 #define SHAPE_C
-    #include "shape.h"
     #include <stdio.h>
     #include <stdlib.h>
     #include <stdarg.h>
     #include <string.h>
+    #include "rect.h"
+    #include "shape.h"
 
     // Function to allocate memory for a shape
-    Shape* shape_new(int x, int y, const char* content) {
-        Shape* shape=(Shape*)malloc(sizeof(Shape));
+    shape_t* shape__new(int x, int y, const char* content) {
+        shape_t* shape=(shape_t*)malloc(sizeof(shape_t));
         (*shape).x = x;
         (*shape).y = y;
+        (*shape).z = 0;
         shape->content = strdup(content);
         return shape;
     }
 
     // Function to copy a shape
-    void shape_copy(Shape* this, Shape source) {
+    void shape__copy(shape_t* this, shape_t source) {
         if (this->content) {
             free(this->content); // Free the old content
         }
@@ -26,21 +28,21 @@
     }
 
     // Function to allocate memory for a shape
-    void shape_init(Shape* shape, int x, int y, const char* content) {
+    void shape__init(shape_t* shape, int x, int y, const char* content) {
         (*shape).x = x;
         (*shape).y = y;
         shape->content = strdup(content);
     }
-    void shape_move_to(Shape* shape,int x,int y){
+    void shape__move_to(shape_t* shape,int x,int y){
         (*shape).x = x;
         (*shape).y = y;
     }
     // Function to change the content of a shape
-    void shape_set(Shape* shape, const char* newContent) {
+    void shape__set(shape_t* shape, const char* newContent) {
         free(shape->content);
         shape->content = strdup(newContent);
     }
-    void shape_set_fmt0(Shape* shape, const char* format, ...) {
+    void shape__set_fmt0(shape_t* shape, const char* format, ...) {
         va_list args;
         va_start(args, format);
         
@@ -63,7 +65,7 @@
 
         va_end(args);
     }
-    void shape_set_fmt(Shape* shape, const char* format, ...) {
+    void shape__set_content_fmt(shape_t* shape, const char* format, ...) {
         va_list args;
         va_start(args, format);
 
@@ -84,8 +86,87 @@
         va_end(args);
     }
 
+
+    size_t countLines(const char* string) {
+        if (string == NULL) {
+            return 0;
+        }
+
+        size_t lineCount = 0;
+        char isNewLine = 1; // Flag to track if we're at the beginning of a new line
+
+        while (*string != '\0') {
+            if (*string == '\n') {
+                lineCount++;
+                isNewLine = 1; // Set the flag for a new line
+            } else {
+                if (isNewLine) {
+                    isNewLine = 0; // Clear the flag for the rest of the line
+                }
+            }
+            string++;
+        }
+
+        // Add one for the last line if it doesn't end with a newline
+        if (!isNewLine) {
+            lineCount++;
+        }
+
+        return lineCount;
+    }
+    // Function to calculate the maximum line width in a string
+    size_t findMaxLineWidth(const char* string) {
+        if (string == NULL) {
+            return 0;
+        }
+
+        size_t maxWidth = 0;
+        size_t currentWidth = 0;
+
+        while (*string != '\0') {
+            if (*string == '\n') {
+                if (currentWidth > maxWidth) {
+                    maxWidth = currentWidth;
+                }
+                currentWidth = 0; // Reset the current line width
+            } else {
+                currentWidth++;
+            }
+            string++;
+        }
+
+        // Check the width of the last line
+        if (currentWidth > maxWidth) {
+            maxWidth = currentWidth;
+        }
+
+        return maxWidth;
+    }
+
+    rectangle_t* shape__get_bounding_client_rect(shape_t* shape) {
+        rectangle_t *r = (rectangle_t*)malloc(sizeof(rectangle_t));
+        if (shape == NULL) {
+            r->x=0;
+            r->y=0;
+            r->z=-100;
+            r->width=-1;
+            r->height=-1;
+            return r;
+        }
+        int shapeWidth=findMaxLineWidth(shape->content);
+        int shapeHeight=countLines(shape->content);
+
+        struct rectangle_t rect={.x=shape->x,.y=shape->y,.z=shape->z,.width=shapeWidth,.height=shapeHeight};
+            r->x=shape->x;
+            r->y=shape->y;
+            r->z=shape->z;
+            r->width=shapeWidth;
+            r->height=shapeHeight;
+        return r;
+    }
+
     // Function to deallocate memory for a shape
-    void shape_dealloc(Shape* shape) {
+    void shape__dealloc(shape_t* shape) {
         free(shape->content);
         shape->content = NULL;
     }

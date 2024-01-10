@@ -12,8 +12,8 @@ void sigint_handler(int signum) {
 }
 
 int main() {
-    // Create a Keyboard object
-    Keyboard *keyboard = keyboard_new();
+    // Create a keyboard_t object
+    keyboard_t *keyboard = keyboard__new();
     if (keyboard == NULL) {
         fprintf(stderr, "Failed to initialize Keyboard\n");
         return 1;
@@ -27,7 +27,7 @@ int main() {
     const char * roll="-\\|/";
     
     while (running) {
-            char *pressed_keys = keyboard_get_pressed(keyboard);
+            char *pressed_keys = keyboard__fetch_pressed(keyboard);
             /// if(pressed_keys != NULL){
             ///     for (int i = 0; pressed_keys[i] != 0; i++) {
             ///         putchar(pressed_keys[i]);
@@ -46,7 +46,7 @@ int main() {
     }
 
     // Clean up and exit
-    keyboard_deinit(keyboard);
+    keyboard__deinit(keyboard);
 
     return 0;
 }

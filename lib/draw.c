@@ -12,7 +12,7 @@
         printf("\e[1;1H\e[2J");
     }
     // Function to draw a shape onto the screen buffer
-    void viewport_shape_draw(Viewport* screen, Shape* shape,char fg,char bg) {
+    void viewport_shape_draw(viewport_t* screen, shape_t* shape,char fg,char bg) {
         int y = shape->y;
         int x = shape->x;
         int offset_y=0;
@@ -24,7 +24,7 @@
                     offset_y+=1;
                     x=shape->x;
                 } else {
-                    viewport_draw_char(screen, x, y+offset_y, *content,fg,bg);
+                    viewport__draw_char(screen, x, y+offset_y, *content,fg,bg);
                 }
             }
             content++;

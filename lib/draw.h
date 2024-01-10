@@ -3,7 +3,7 @@
     #include "viewport.h"
     #include "shape.h"
     void terminal_clear();
-    void viewport_shape_draw(Viewport* screen, Shape* shape,char fg,char bg);
+    void viewport_shape_draw(viewport_t* screen, shape_t* shape,char fg,char bg);
     char** split_lines(const char* input, int* lineCount);
     char* circular_offset_line(char* line);
     char* circular_offset_string(const char* input);

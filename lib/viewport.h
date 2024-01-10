@@ -40,21 +40,22 @@
     #define BACKGROUND_BRIGHT_COLOR_WHITE "\x1b[107m"
 
     // Define a struct for the viewport buffer
-    struct Viewport {
+    struct viewport_t {
         int width;
         int height;
         char** buffer;
         char** colors;
         char** backgrounds;
     };
-    typedef struct Viewport Viewport;
+    typedef struct viewport_t viewport_t;
 
-    void viewport_alloc(Viewport* viewport);
-    void viewport_init(Viewport* viewport);
-    Viewport* viewport_new(int width,int height);
-    void viewport_clear(Viewport* viewport);
-    void viewport_draw_char(Viewport* viewport, int x, int y, char character,char fg,char bg);
-    void viewport_renderer(const Viewport* viewport);
-    void viewport_dealloc(Viewport* viewport);
+    void viewport__alloc(viewport_t* viewport);
+    void viewport__init(viewport_t* viewport);
+    viewport_t* viewport__new(int width,int height);
+    void viewport__clear(viewport_t* viewport);
+    void viewport__draw_char(viewport_t* viewport, int x, int y, char character,char fg,char bg);
+    void viewport__draw_text(viewport_t* viewport, int x, int y, char *character,char fg,char bg);
+    void viewport__renderer(const viewport_t* viewport);
+    void viewport__dealloc(viewport_t* viewport);
 
 #endif
