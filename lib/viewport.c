@@ -9,7 +9,7 @@
     #include <sys/ioctl.h>
 
     // Function to allocate memory for the viewport buffer
-    void viewport_alloc(Viewport* viewport) {
+    void viewport__alloc(Viewport* viewport) {
         viewport->buffer = (char**)malloc(viewport->height * sizeof(char*));
         viewport->colors = (char**)malloc(viewport->height * sizeof(char*));
         viewport->backgrounds = (char**)malloc(viewport->height * sizeof(char*));
@@ -21,7 +21,7 @@
     }
 
     // Function to initialize the viewport buffer
-    void viewport_init(Viewport* viewport) {
+    void viewport__init(Viewport* viewport) {
         for (int i = 0; i < viewport->height; i++) {
             memset(viewport->buffer[i], BLANK, viewport->width);
             memset(viewport->colors[i], 7, viewport->width);
@@ -29,21 +29,21 @@
         }
     }
 
-    Viewport* viewport_new(int width,int height) {
+    Viewport* viewport__new(int width,int height) {
         // Create a viewport buffer
         struct Viewport* viewport=(Viewport*)malloc(sizeof(Viewport));
         viewport->width = width;  // Adjust to your desired viewport width
         viewport->height = height; // Adjust to your desired viewport height
 
         // Allocate memory for the viewport buffer
-        viewport_alloc(viewport);
+        viewport__alloc(viewport);
 
         // Initialize and clear the viewport buffer
-        viewport_init(viewport);
+        viewport__init(viewport);
         return viewport;
     }
     // Function to clear the viewport buffer
-    void viewport_clear(Viewport* viewport) {
+    void viewport__clear(Viewport* viewport) {
         for (int i = 0; i < viewport->height; i++) {
             memset(viewport->buffer[i], BLANK, viewport->width);
             memset(viewport->colors[i], 7, viewport->width);
@@ -52,7 +52,7 @@
     }
 
     // Function to draw a character at a specific position in the viewport buffer
-    void viewport_draw_char(Viewport* viewport, int x, int y, char character,char fg,char bg) {
+    void viewport__draw_char(Viewport* viewport, int x, int y, char character,char fg,char bg) {
         if (x >= 0 && x < viewport->width && y >= 0 && y < viewport->height) {
             viewport->buffer[y][x] = character;
             viewport->colors[y][x] = fg;
@@ -96,7 +96,7 @@
         BACKGROUND_BRIGHT_COLOR_WHITE    /// 15 
     };
     // Function to render the viewport buffer to the terminal
-    void viewport_renderer(const Viewport* viewport) {
+    void viewport__renderer(const Viewport* viewport) {
         putchar('+');
         for (int x = 0; x < viewport->width; x++) {
             putchar('-');
@@ -133,7 +133,7 @@
     }
 
     // Function to deallocate memory for the viewport buffer
-    void viewport_dealloc(Viewport* viewport) {
+    void viewport__dealloc(Viewport* viewport) {
         for (int i = 0; i < viewport->height; i++) {
             free(viewport->buffer[i]);
         }

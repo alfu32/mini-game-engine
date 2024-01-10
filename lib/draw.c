@@ -24,7 +24,7 @@
                     offset_y+=1;
                     x=shape->x;
                 } else {
-                    viewport_draw_char(screen, x, y+offset_y, *content,fg,bg);
+                    viewport__draw_char(screen, x, y+offset_y, *content,fg,bg);
                 }
             }
             content++;

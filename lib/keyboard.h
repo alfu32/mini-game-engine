@@ -6,7 +6,7 @@
     #define KEYBOARD_MAX_DEVICES 128
     /// dchar* KEYBOARD_NOKEYS="---\0";
 
-    typedef struct Keyboard {
+    typedef struct keyboard_t {
         int num_devices;
         struct termios oldt;
         struct termios newt;
@@ -20,15 +20,15 @@
         struct input_event ev;
         // TODO remove
         char* device_path;
-    } Keyboard;
+    } keyboard_t;
 
-    Keyboard* keyboard_new();
-    int is_keyboard(Keyboard *kb,const char *device_path);
-    int find_keyboard_devices(Keyboard *kb,char **device_paths);
-    int keyboard_refresh(Keyboard *self);
-    int keyboard_contains(Keyboard *self, const char *keys);
+    keyboard_t* keyboard__new();
+    int keyboard__device_is_keyboard(keyboard_t *kb,const char *device_path);
+    int keyboard__find_keyboard_devices(keyboard_t *kb,char **device_paths);
+    int keyboard__refresh(keyboard_t *self);
+    int keyboard__contains_keys(keyboard_t *self, const char *keys);
     // return NULL when no key is pressed
-    char* keyboard_get_pressed(Keyboard *self);
-    int keyboard_deinit(Keyboard *self);
+    char* keyboard__fetch_pressed(keyboard_t *self);
+    int keyboard__deinit(keyboard_t *self);
 
 #endif

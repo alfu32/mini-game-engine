@@ -6,10 +6,10 @@
     #include <stdarg.h>
 
     // Function to create an animated shape
-    Entity* entity_new(int birthFrame,int x0, int y0, const char* content, ShapeTransform transformFunc,const char color,const char background) {
-        Entity* entity=(Entity*)malloc(sizeof(Entity));
+    entity_t* entity__new(int birthFrame,int x0, int y0, const char* content, ShapeTransform transformFunc,const char color,const char background) {
+        entity_t* entity=(entity_t*)malloc(sizeof(entity_t));
         entity->type = SHIP;
-        entity->shape = shape_new(x0,y0,content);
+        entity->shape = shape__new(x0,y0,content);
         entity->birth_frame = birthFrame;
         entity->life = 1;
         entity->power=1;
@@ -21,9 +21,9 @@
     }
 
     // Function to destroy an animated shape
-    void entity_dealloc(Entity* entity) {
+    void entity__dealloc(entity_t* entity) {
         if (entity->shape != NULL) {
-            shape_dealloc(entity->shape);
+            shape__dealloc(entity->shape);
             free(entity->shape);
         }
         entity->shape = NULL;
@@ -56,7 +56,7 @@
         }
         return str;
     }
-    void entity__print(Entity* entity) {
+    void entity__print(entity_t* entity) {
         char* shape_escaped_content = escape_chars(entity->shape->content);
         //escape_chars(shape_escaped_content);
 

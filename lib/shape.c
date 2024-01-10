@@ -8,7 +8,7 @@
     #include "shape.h"
 
     // Function to allocate memory for a shape
-    Shape* shape_new(int x, int y, const char* content) {
+    Shape* shape__new(int x, int y, const char* content) {
         Shape* shape=(Shape*)malloc(sizeof(Shape));
         (*shape).x = x;
         (*shape).y = y;
@@ -18,7 +18,7 @@
     }
 
     // Function to copy a shape
-    void shape_copy(Shape* this, Shape source) {
+    void shape__copy(Shape* this, Shape source) {
         if (this->content) {
             free(this->content); // Free the old content
         }
@@ -28,21 +28,21 @@
     }
 
     // Function to allocate memory for a shape
-    void shape_init(Shape* shape, int x, int y, const char* content) {
+    void shape__init(Shape* shape, int x, int y, const char* content) {
         (*shape).x = x;
         (*shape).y = y;
         shape->content = strdup(content);
     }
-    void shape_move_to(Shape* shape,int x,int y){
+    void shape__move_to(Shape* shape,int x,int y){
         (*shape).x = x;
         (*shape).y = y;
     }
     // Function to change the content of a shape
-    void shape_set(Shape* shape, const char* newContent) {
+    void shape__set(Shape* shape, const char* newContent) {
         free(shape->content);
         shape->content = strdup(newContent);
     }
-    void shape_set_fmt0(Shape* shape, const char* format, ...) {
+    void shape__set_fmt0(Shape* shape, const char* format, ...) {
         va_list args;
         va_start(args, format);
         
@@ -166,7 +166,7 @@
     }
 
     // Function to deallocate memory for a shape
-    void shape_dealloc(Shape* shape) {
+    void shape__dealloc(Shape* shape) {
         free(shape->content);
         shape->content = NULL;
     }

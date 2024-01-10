@@ -44,12 +44,12 @@ int main() {
     int result = system("xset r rate 30 30");
 
     // Create a vpp buffer
-    Viewport* vpp=viewport_new(80,25);
+    Viewport* vpp=viewport__new(80,25);
 
     // Create a shape and draw it on the vpp
-    Shape* shape=shape_new(10,5,"HooHoo");
+    Shape* shape=shape__new(10,5,"HooHoo");
     // Create a shape and draw it on the vpp
-    Shape* status=shape_new(0,0,":::GAME:::..........................................");
+    Shape* status=shape__new(0,0,":::GAME:::..........................................");
 
     
     int count=0;
@@ -83,11 +83,11 @@ int main() {
         /// free(status->content);
         shape__set_content_fmt(status,":::GAME::: [%c] x:%6d y:%6d,frame:%8d ",key, shape->x,shape->y,count);
         // Initialize and clear the vpp buffer
-        viewport_clear(vpp);
+        viewport__clear(vpp);
         viewport_shape_draw(vpp, shape,1,0);
         viewport_shape_draw(vpp, status,2,0);
         // Render the vpp
-        viewport_renderer(vpp);
+        viewport__renderer(vpp);
         count++;
         usleep(10000);
     }
@@ -95,11 +95,11 @@ int main() {
     sleep(1);
 
     // Deallocate memory for the shape
-    shape_dealloc(shape);
-    shape_dealloc(status);
+    shape__dealloc(shape);
+    shape__dealloc(status);
 
     // Deallocate memory for the vpp buffer
-    viewport_dealloc(vpp);
+    viewport__dealloc(vpp);
     printf(" - resetting terminal \n");
     sleep(1);
 

@@ -5,23 +5,23 @@
     #include <stdarg.h>
     #include <stdio.h>
 
-    typedef struct Entity Entity;
+    typedef struct entity_t entity_t;
     // Define a function pointer type for shape transformation
-    typedef Shape (*ShapeTransform)(struct Entity*, int, char*);
+    typedef Shape (*ShapeTransform)(struct entity_t*, int, char*);
 
-    typedef enum EntityType EntityType;
+    typedef enum entity_type_t entity_type_t;
 
-    typedef enum EntityType{
+    typedef enum entity_type_t{
         BACKGROUND=0x10,
         SHIP=0x11,
         FOE=0x12,
         BULLET=0x13,
         ROCKET=0x14
-    } EntityType;
+    } entity_type_t;
 
     // Define a struct for an animated shape
-    typedef struct Entity {
-        EntityType type;
+    typedef struct entity_t {
+        entity_type_t type;
         // Flag flags;
         struct Shape* shape;
         int birth_frame;
@@ -32,10 +32,10 @@
         char color;
         char background;
         ShapeTransform next;
-    } Entity;
+    } entity_t;
 
-    Entity* entity_new(int birthFrame,int x0, int y0, const char* content, ShapeTransform transformFunc,const char color,const char background);
-    void entity_dealloc(Entity* entity);
-    void entity__print(Entity* entity);
+    entity_t* entity__new(int birthFrame,int x0, int y0, const char* content, ShapeTransform transformFunc,const char color,const char background);
+    void entity__dealloc(entity_t* entity);
+    void entity__print(entity_t* entity);
 
 #endif

@@ -70,8 +70,8 @@
         }
     }
 
-    Keyboard* keyboard_new(const char* device_path) {
-        Keyboard *keyboard = (Keyboard *)malloc(sizeof(Keyboard));
+    keyboard_t* keyboard__new(const char* device_path) {
+        keyboard_t *keyboard = (keyboard_t *)malloc(sizeof(keyboard_t));
         keyboard->device_path=strdup(device_path);
         tcgetattr(STDIN_FILENO, &(keyboard->oldt));
         keyboard->newt = keyboard->oldt;
@@ -79,7 +79,7 @@
         tcsetattr(STDIN_FILENO, TCSANOW, &(keyboard->newt));
 
         if (keyboard == NULL) {
-            fprintf(stderr, "Failed to allocate memory for Keyboard\n");
+            fprintf(stderr, "Failed to allocate memory for keyboard_t\n");
             return NULL;
         }
 
@@ -98,7 +98,7 @@
 
         memset(keyboard->key_state, 0, sizeof(keyboard->key_state));
 
-        int num_keyboards = find_keyboard_devices(keyboard,keyboard->device_paths);
+        int num_keyboards = keyboard__find_keyboard_devices(keyboard,keyboard->device_paths);
 
         if (num_keyboards < 0) {
             fprintf(stderr, "Error finding keyboard devices\n");
@@ -122,7 +122,7 @@
         return keyboard;
     }
 
-    int is_keyboard(Keyboard *kb,const char *device_path) {
+    int keyboard__device_is_keyboard(keyboard_t *kb,const char *device_path) {
         return strcmp(device_path, kb->device_path) == 0;
 
         /////////// struct libevdev *dev = NULL;
@@ -141,15 +141,15 @@
         ///////////     return 0;
         /////////// }
         /////////// 
-        /////////// int is_keyboard = libevdev_has_event_type(dev, EV_KEY);
+        /////////// int keyboard__device_is_keyboard = libevdev_has_event_type(dev, EV_KEY);
         /////////// 
         /////////// libevdev_free(dev);
         /////////// close(fd);
         /////////// 
-        /////////// return is_keyboard;
+        /////////// return keyboard__device_is_keyboard;
     }
 
-    int find_keyboard_devices(Keyboard *kb,char **device_paths) {
+    int keyboard__find_keyboard_devices(keyboard_t *kb,char **device_paths) {
         DIR *dir;
         struct dirent *entry;
         int num_keyboards = 0;
@@ -167,7 +167,7 @@
                 snprintf(device_path, sizeof(device_path), "/dev/input/%s", entry->d_name);
 
                     printf("checking keyboard  [%s]/[%s] : ", device_path,kb->device_path);
-                // if (is_keyboard(kb,device_path)) {
+                // if (keyboard__device_is_keyboard(kb,device_path)) {
                 if ( 0 == strcmp(kb->device_path,device_path)) {
                     printf("YES\n");
                     device_paths[num_keyboards] = strdup(device_path);
@@ -182,7 +182,7 @@
         return num_keyboards;
     }
     
-    int keyboard_refresh(Keyboard *self) {
+    int keyboard__refresh(keyboard_t *self) {
         ssize_t bytesRead = read(self->device, &(self->ev), sizeof(struct input_event));
         if (bytesRead == -1) {
             // perror("Error reading input event");
@@ -202,7 +202,7 @@
         return 0;
     }
 
-    int keyboard_refresh_0(Keyboard *self) {
+    int keyboard_refresh_0(keyboard_t *self) {
         for (int i = 0; i < self->num_devices; i++) {
             int fd = open(self->device_paths[i], O_RDONLY | O_NONBLOCK);
 
@@ -225,8 +225,8 @@
         return 0;
     }
 
-    int keyboard_contains(Keyboard *self, const char *keys) {
-        keyboard_refresh(self);
+    int keyboard__contains_keys(keyboard_t *self, const char *keys) {
+        keyboard__refresh(self);
 
         for (int i = 0; keys[i]; i++) {
             int key = keys[i];
@@ -240,8 +240,8 @@
     }
 
 
-    char* keyboard_get_pressed(Keyboard *self) {
-        keyboard_refresh(self);
+    char* keyboard__fetch_pressed(keyboard_t *self) {
+        keyboard__refresh(self);
         int num_keys = 0;
 
         for (int key = 0; key < KEY_MAX; key++) {
@@ -267,7 +267,7 @@
         return index_copy;
     }
 
-    int keyboard_deinit(Keyboard *self) {
+    int keyboard__deinit(keyboard_t *self) {
         tcsetattr(STDIN_FILENO, TCSANOW, &(self->oldt));
 
         // Close the input device

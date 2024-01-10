@@ -49,12 +49,12 @@
     };
     typedef struct Viewport Viewport;
 
-    void viewport_alloc(Viewport* viewport);
-    void viewport_init(Viewport* viewport);
-    Viewport* viewport_new(int width,int height);
-    void viewport_clear(Viewport* viewport);
-    void viewport_draw_char(Viewport* viewport, int x, int y, char character,char fg,char bg);
-    void viewport_renderer(const Viewport* viewport);
-    void viewport_dealloc(Viewport* viewport);
+    void viewport__alloc(Viewport* viewport);
+    void viewport__init(Viewport* viewport);
+    Viewport* viewport__new(int width,int height);
+    void viewport__clear(Viewport* viewport);
+    void viewport__draw_char(Viewport* viewport, int x, int y, char character,char fg,char bg);
+    void viewport__renderer(const Viewport* viewport);
+    void viewport__dealloc(Viewport* viewport);
 
 #endif
