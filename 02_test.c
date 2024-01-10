@@ -50,8 +50,8 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'d') != NULL){
                 sh.x+=1;
-                if(sh.x>80){
-                    sh.x=80;
+                if(sh.x>140){
+                    sh.x=140;
                 }
                 last_move=frame;
             }
@@ -66,8 +66,8 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'s') != NULL){
                 sh.y+=1;
-                if(sh.y>20){
-                    sh.y=20;
+                if(sh.y>40){
+                    sh.y=40;
                 }
                 last_move=frame;
             }
@@ -150,8 +150,8 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'l') != NULL){
                 sh.x+=1;
-                if(sh.x>80){
-                    sh.x=80;
+                if(sh.x>140){
+                    sh.x=140;
                 }
                 last_move1=frame;
             }
@@ -166,8 +166,8 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'k') != NULL){
                 sh.y+=1;
-                if(sh.y>20){
-                    sh.y=20;
+                if(sh.y>40){
+                    sh.y=40;
                 }
                 last_move1=frame;
             }
@@ -231,7 +231,7 @@ shape_t foe_behaviour_next(entity_t* e, int frame, char *keys) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
-    if(sh.y+foe_direction>20){
+    if(sh.y+foe_direction>40){
         foe_direction=-1;
     }else if(sh.y+foe_direction<1){
         foe_direction=1;
@@ -384,23 +384,23 @@ int main(int argc,const char **argv) {
 
 
     // Create a vpp buffer
-    vpp=viewport__new(160,25);
+    vpp=viewport__new(160,45);
 
     // Create a scene manager
     manager = scene_manager__new();
 
     // Create two entities (animated shapes) with different behaviors
-    entity_t* bkg0 = entity__new(0, 160, 0, background,rolling_background_behaviour,2,1);
+    entity_t* bkg0 = entity__new(0, 160, 20, background,rolling_background_behaviour,2,1);
     bkg0->shape->z=-1;
     bkg0->collision=0;
     bkg0->power=0;
     bkg0->team=1;
-    entity_t* bkg1 = entity__new(0, 80, 0, background,rolling_background_behaviour,2,1);
+    entity_t* bkg1 = entity__new(0, 80, 20, background,rolling_background_behaviour,2,1);
     bkg1->shape->z=-1;
     bkg1->collision=0;
     bkg1->power=0;
     bkg1->team=1;
-    entity_t* bkg2 = entity__new(0, 0, 0, background,rolling_background_behaviour,2,1);
+    entity_t* bkg2 = entity__new(0, 0, 20, background,rolling_background_behaviour,2,1);
     bkg2->shape->z=-1;
     bkg2->collision=0;
     bkg2->power=0;

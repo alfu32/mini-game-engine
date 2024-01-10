@@ -114,9 +114,10 @@
             entity_t* entity = manager->entities[i];
             if (entity != NULL && entity->life > 0 && entity->shape != NULL) {
                 viewport_shape_draw(vp, entity->shape,entity->color,entity->background);
-                int sz = entity->life/100;
+                int sz = entity->life/100+5;
                 char* info=(char*)malloc(sizeof(char)*(sz+1));
-                memset(info,'_',sz);
+                snprintf(info,sz,"%4d",entity->life);
+                memset(info+4,'-',sz-5);
                 info[sz]='\0';
                 viewport__draw_text(vp,entity->shape->x,entity->shape->y-1,info,1,1);
                 free(info);
