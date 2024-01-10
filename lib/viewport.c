@@ -59,6 +59,22 @@
             viewport->backgrounds[y][x] = fg;
         }
     }
+
+    void viewport__draw_text(viewport_t* viewport, int x, int y, char *character,char fg,char bg){
+        char* cursor=character;
+        int xx=0;
+        int yy=0;
+        while(*cursor){
+            if(*cursor == '\n'){
+                yy+=1;
+                xx=0;
+            } else {
+                viewport__draw_char(viewport,x+xx,y+yy,*cursor,fg,bg);
+                xx+=1;
+            }
+            cursor+=1;
+        }
+    }
     const char* colors[]={
         COLOR_RESET,          /// 0
         COLOR_RED,            /// 1

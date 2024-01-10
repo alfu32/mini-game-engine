@@ -54,6 +54,7 @@
     viewport_t* viewport__new(int width,int height);
     void viewport__clear(viewport_t* viewport);
     void viewport__draw_char(viewport_t* viewport, int x, int y, char character,char fg,char bg);
+    void viewport__draw_text(viewport_t* viewport, int x, int y, char *character,char fg,char bg);
     void viewport__renderer(const viewport_t* viewport);
     void viewport__dealloc(viewport_t* viewport);
 
