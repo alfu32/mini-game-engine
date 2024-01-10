@@ -32,16 +32,18 @@
     void entity__print(Entity* entity) {
         printf("Entity {\n\
             type        : %d\n\
-            shape       : %s\n\
-            birth_frame : %d\n\
-            life        : %d\n\
-            power       : %d\n\
-            collision   : %d\n\
-            color       : %d\n\
-            background  : %d\n\
+            shape       : Shape { x : %d, y : %d, z : %d\n\
+                content : %s\n\
+            }\n\
+            birth_frame : %d, life        : %d\n\
+            power       : %d, collision   : %d\n\
+            color       : %d, background  : %d\n\
         }\n",
             entity->type,
-            entity->shape,
+            entity->shape->x,
+            entity->shape->y,
+            entity->shape->z,
+            entity->shape->content,
             entity->birth_frame,
             entity->life,
             entity->power,

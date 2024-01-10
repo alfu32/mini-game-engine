@@ -67,7 +67,7 @@
         if (shape == NULL) {
             r->x=0;
             r->y=0;
-            r->z=0;
+            r->z=-100;
             r->width=-1;
             r->height=-1;
             return r;
@@ -75,7 +75,7 @@
         int shapeWidth=findMaxLineWidth(shape->content);
         int shapeHeight=countLines(shape->content);
 
-        struct ClientRect rect={.x=shape->x,.y=shape->y,.width=shapeWidth,.height=shapeHeight};
+        struct ClientRect rect={.x=shape->x,.y=shape->y,.z=shape->z,.width=shapeWidth,.height=shapeHeight};
             r->x=shape->x;
             r->y=shape->y;
             r->z=shape->z;

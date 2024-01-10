@@ -11,6 +11,7 @@
         Shape* shape=(Shape*)malloc(sizeof(Shape));
         (*shape).x = x;
         (*shape).y = y;
+        (*shape).z = 0;
         shape->content = strdup(content);
         return shape;
     }
