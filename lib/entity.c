@@ -61,7 +61,7 @@
         //escape_chars(shape_escaped_content);
 
         printf("Entity { type : %d, birth_frame : %d, life : %d, power : %d, collision : %d, team : %d, color : %d, background : %d,\n\
-            shape: Shape { x : %d, y : %d, z : %d, content : \"%s\"\n\
+            shape: shape_t { x : %d, y : %d, z : %d, content : \"%s\"\n\
             },\n\
         }\n",
             entity->type,

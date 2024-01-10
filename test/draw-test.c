@@ -44,12 +44,12 @@ int main() {
     int result = system("xset r rate 30 30");
 
     // Create a vpp buffer
-    Viewport* vpp=viewport__new(80,25);
+    viewport_t* vpp=viewport__new(80,25);
 
     // Create a shape and draw it on the vpp
-    Shape* shape=shape__new(10,5,"HooHoo");
+    shape_t* shape=shape__new(10,5,"HooHoo");
     // Create a shape and draw it on the vpp
-    Shape* status=shape__new(0,0,":::GAME:::..........................................");
+    shape_t* status=shape__new(0,0,":::GAME:::..........................................");
 
     
     int count=0;

@@ -12,17 +12,17 @@
 
 
 // Create a vpp buffer
-Viewport* vpp;
+viewport_t* vpp;
 
 // Create a scene manager
-SceneManager* manager;
+scene_manager_t* manager;
 // declare behaviours
-Shape player_behaviour_next(entity_t* e, int frame, char* keys);
-Shape player1_behaviour_next(entity_t* e, int frame, char* keys);
-Shape foe_behaviour_next(entity_t* e, int frame, char* keys);
-Shape bullet_behaviour(entity_t* e, int frame, char* keys);
-Shape counter_bullet_behaviour(entity_t* e, int frame, char* keys);
-Shape foe_bullet_behaviour(entity_t* e, int frame, char* keys);
+shape_t player_behaviour_next(entity_t* e, int frame, char* keys);
+shape_t player1_behaviour_next(entity_t* e, int frame, char* keys);
+shape_t foe_behaviour_next(entity_t* e, int frame, char* keys);
+shape_t bullet_behaviour(entity_t* e, int frame, char* keys);
+shape_t counter_bullet_behaviour(entity_t* e, int frame, char* keys);
+shape_t foe_bullet_behaviour(entity_t* e, int frame, char* keys);
 
 int foe_direction=1;
 
@@ -32,9 +32,9 @@ int last_counter_cannon=0;
 int last_move=0;
 
 // Define two different 'next' behaviors for the shapes
-Shape player_behaviour_next(entity_t* e, int frame, char *keys) {
+shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
+    shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
 
     if(keys != NULL){
@@ -132,9 +132,9 @@ int last_cannon1=0;
 int last_counter_cannon1=0;
 int last_move1=0;
 // Define two different 'next' behaviors for the shapes
-Shape player1_behaviour_next(entity_t* e, int frame, char *keys) {
+shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
+    shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
 
     if(keys != NULL){
@@ -227,9 +227,9 @@ Shape player1_behaviour_next(entity_t* e, int frame, char *keys) {
 }
 
 
-Shape foe_behaviour_next(entity_t* e, int frame, char *keys) {
+shape_t foe_behaviour_next(entity_t* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
+    shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(sh.y+foe_direction>20){
         foe_direction=-1;
@@ -249,9 +249,9 @@ Shape foe_behaviour_next(entity_t* e, int frame, char *keys) {
     }
     return sh;
 }
-Shape bullet_behaviour(entity_t* e, int frame, char *keys) {
+shape_t bullet_behaviour(entity_t* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
+    shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(frame % 1 == 0){
         sh.x=sh.x+1;
@@ -259,9 +259,9 @@ Shape bullet_behaviour(entity_t* e, int frame, char *keys) {
     }
     return sh;
 }
-Shape counter_bullet_behaviour(entity_t* e, int frame, char *keys) {
+shape_t counter_bullet_behaviour(entity_t* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
+    shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(frame % 1 == 0){
         sh.x=sh.x-1;
@@ -272,9 +272,9 @@ Shape counter_bullet_behaviour(entity_t* e, int frame, char *keys) {
     }
     return sh;
 }
-Shape rolling_background_behaviour(entity_t* e, int frame, char *keys) {
+shape_t rolling_background_behaviour(entity_t* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
+    shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(frame % 1 == 0){
         if((sh.x-1) <-80){
@@ -429,9 +429,9 @@ int main(int argc,const char **argv) {
     scene_manager__add_entity(manager, player1);
     scene_manager__add_entity(manager, baddie);
     // Create a shape and draw it on the vpp
-    Shape* shape=shape__new(10,5,"HooHooHooo");
+    shape_t* shape=shape__new(10,5,"HooHooHooo");
     // Create a shape and draw it on the vpp
-    Shape* status=shape__new(0,0,":::GAME:::.🚀🚀🚀......................................");
+    shape_t* status=shape__new(0,0,":::GAME:::.🚀🚀🚀......................................");
 
     printf(" starting \n");
     for(int k=0;k<manager->entities_count;k++){

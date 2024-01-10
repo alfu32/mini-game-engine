@@ -11,36 +11,36 @@
 
 
     // Function to create a new scene manager
-    SceneManager* scene_manager__new() {
-        SceneManager* manager = (SceneManager*)malloc(sizeof(SceneManager));
+    scene_manager_t* scene_manager__new() {
+        scene_manager_t* manager = (scene_manager_t*)malloc(sizeof(scene_manager_t));
         manager->entities = NULL;
         manager->entities_count = 0;
         return manager;
     }
 
     // Function to add a entity to the scene
-    void scene_manager__add_entity(SceneManager* manager, entity_t* entity) {
+    void scene_manager__add_entity(scene_manager_t* manager, entity_t* entity) {
         manager->entities_count++;
         manager->entities = realloc(manager->entities, manager->entities_count * sizeof(entity_t*));
         manager->entities[manager->entities_count - 1] = entity;
     }
 
     // Function to update all entities in the scene
-    void scene_manager__update(SceneManager* manager, int currentFrame,char *keys) {
+    void scene_manager__update(scene_manager_t* manager, int currentFrame,char *keys) {
         /// unsigned int key = 0x0020;
         /// if (key_is_pressed()) {
         ///     key = key_read();
         /// }
         for (int i = 0; i < manager->entities_count; i++) {
             entity_t* entity = manager->entities[i];
-            /// Shape newShape = entity->next(entity, currentFrame, key );
-            Shape newShape = entity->next(entity, currentFrame, keys );
+            /// shape_t newShape = entity->next(entity, currentFrame, key );
+            shape_t newShape = entity->next(entity, currentFrame, keys );
             shape__copy(entity->shape, newShape);
         }
     }
     // Function to remove dead shapes (life is 0) from the scene
-    void scene_manager__do_collisions(SceneManager* manager) {
-        EntityCollision* collisions = (EntityCollision*)malloc(sizeof(EntityCollision)*(manager->entities_count)*(manager->entities_count));
+    void scene_manager__do_collisions(scene_manager_t* manager) {
+        entity_collision_t* collisions = (entity_collision_t*)malloc(sizeof(entity_collision_t)*(manager->entities_count)*(manager->entities_count));
         unsigned int collision_count=0;
         for (int i = 0; i < manager->entities_count; i++) {
             if(i>0){
@@ -48,10 +48,10 @@
                     entity_t* ea = manager->entities[i];
                     entity_t* eb = manager->entities[j];
                     if(ea->team != eb->team && eb->collision != 0 && ea->collision != 0 && ea->shape->z == eb->shape->z ){
-                        ClientRect* a = shape__get_bounding_client_rect(ea->shape);
-                        ClientRect* b = shape__get_bounding_client_rect(eb->shape);
-                        if( client_rect__intersects(a,b)){
-                            EntityCollision cl;
+                        rectangle_t* a = shape__get_bounding_client_rect(ea->shape);
+                        rectangle_t* b = shape__get_bounding_client_rect(eb->shape);
+                        if( rectangle__intersects(a,b)){
+                            entity_collision_t cl;
                             cl.a=ea;
                             cl.b=eb;
                             collisions[collision_count++]=cl;
@@ -81,7 +81,7 @@
         free(collisions);
     }
     // Function to remove dead shapes (life is 0) from the scene
-    void scene_manager__remove_dead_shapes(SceneManager* manager) {
+    void scene_manager__remove_dead_shapes(scene_manager_t* manager) {
         int aliveCount = 0;
         for (int i = 0; i < manager->entities_count; i++) {
             if (manager->entities[i]->life != 0) {
@@ -105,7 +105,7 @@
         manager->entities = aliveShapes;
         manager->entities_count = aliveCount;
     }
-    void scene_manager__draw_on_viewport(SceneManager* manager, Viewport* vp) {
+    void scene_manager__draw_on_viewport(scene_manager_t* manager, viewport_t* vp) {
         if (manager == NULL || vp == NULL) {
             return;
         }
@@ -118,7 +118,7 @@
         }
     }
     // Function to free the scene manager
-    void scene_manager__free(SceneManager* manager) {
+    void scene_manager__free(scene_manager_t* manager) {
         for (int i = 0; i < manager->entities_count; i++) {
             if (manager->entities[i]->shape->content) {
                 free(manager->entities[i]->shape->content);

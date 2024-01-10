@@ -15,7 +15,7 @@ int main() {
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
     // Create a vp buffer
-    struct Viewport vp;
+    struct viewport_t vp;
     vp.width = 80;  // Adjust to your desired vp width
     vp.height = 24; // Adjust to your desired vp height
 
@@ -26,7 +26,7 @@ int main() {
     viewport__init(&vp);
 
     // Create a shape and draw it on the vp
-    struct Shape shape;
+    struct shape_t shape;
     shape__init(&shape, 10, 5, "Hello");
 
     

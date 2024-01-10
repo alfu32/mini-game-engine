@@ -7,7 +7,7 @@
 
     typedef struct entity_t entity_t;
     // Define a function pointer type for shape transformation
-    typedef Shape (*ShapeTransform)(struct entity_t*, int, char*);
+    typedef shape_t (*ShapeTransform)(struct entity_t*, int, char*);
 
     typedef enum entity_type_t entity_type_t;
 
@@ -23,7 +23,7 @@
     typedef struct entity_t {
         entity_type_t type;
         // Flag flags;
-        struct Shape* shape;
+        struct shape_t* shape;
         int birth_frame;
         int life;
         int power;
