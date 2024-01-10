@@ -8,6 +8,7 @@
     struct ClientRect {
         int x;
         int y;
+        int z;
         unsigned int width;
         unsigned int height;
     };

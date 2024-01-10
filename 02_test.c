@@ -34,7 +34,7 @@ int last_move=0;
 // Define two different 'next' behaviors for the shapes
 Shape player_behaviour_next(Entity* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,""};
+    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
 
     if(keys != NULL){
@@ -129,7 +129,7 @@ int last_move1=0;
 // Define two different 'next' behaviors for the shapes
 Shape player1_behaviour_next(Entity* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,""};
+    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
 
     if(keys != NULL){
@@ -219,7 +219,7 @@ Shape player1_behaviour_next(Entity* e, int frame, char *keys) {
 
 Shape foe_behaviour_next(Entity* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,""};
+    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(sh.y+foe_direction>20){
         foe_direction=-1;
@@ -239,7 +239,7 @@ Shape foe_behaviour_next(Entity* e, int frame, char *keys) {
 }
 Shape bullet_behaviour(Entity* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,""};
+    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(frame % 1 == 0){
         sh.x=sh.x+1;
@@ -249,17 +249,20 @@ Shape bullet_behaviour(Entity* e, int frame, char *keys) {
 }
 Shape counter_bullet_behaviour(Entity* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,""};
+    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(frame % 1 == 0){
         sh.x=sh.x-1;
         e->life=e->life-1;
     }
+    if(frame % 2 == 0){
+        sh.z=!sh.z;
+    }
     return sh;
 }
 Shape rolling_background_behaviour(Entity* e, int frame, char *keys) {
     // Handle the key input here
-    Shape sh = {e->shape->x,e->shape->y,""};
+    Shape sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(frame % 1 == 0){
         if((sh.x-1) <-80){
@@ -345,11 +348,11 @@ int main(int argc,const char **argv) {
         printf("please specify an input device from /dev/input/event*\n");
         return -1;
     }
-    sleep(1);
+    //sleep(1);
 
     // Create a Keyboard object
     Keyboard *keyboard = keyboard_new(argv[1]);
-    sleep(1);
+    //sleep(1);
     if (keyboard == NULL) {
         fprintf(stderr, "Failed to initialize Keyboard\n");
         return 1;
@@ -376,23 +379,27 @@ int main(int argc,const char **argv) {
 
     // Create two entities (animated shapes) with different behaviors
     Entity* bkg0 = entity_new(0, 160, 0, background,rolling_background_behaviour,2,1);
+    bkg0->shape->z=-1;
     bkg0->collision=0;
     bkg0->power=0;
     Entity* bkg1 = entity_new(0, 80, 0, background,rolling_background_behaviour,2,1);
+    bkg1->shape->z=-1;
     bkg1->collision=0;
     bkg1->power=0;
     Entity* bkg2 = entity_new(0, 0, 0, background,rolling_background_behaviour,2,1);
+    bkg2->shape->z=-1;
     bkg2->collision=0;
     bkg2->power=0;
     Entity* player = entity_new(0, 10, 10, ship_shape,player_behaviour_next,4,1);
     player->power=10;
-    player->life=100000;
+    player->life=1000;
     Entity* player1 = entity_new(0, 10, 10, ship_shape,player1_behaviour_next,5,1);
+    bkg2->shape->z=1;
     player1->power=10;
-    player1->life=100000;
+    player1->life=1000;
     Entity* baddie = entity_new(0, 140, 10, foe_shape,foe_behaviour_next,1,1);
-    player1->power=100;
-    player1->life=100;
+    baddie->power=100;
+    baddie->life=1000;
 
     // Add entities to the scene
     scene_manager_add_entity(manager, bkg0);
@@ -412,14 +419,14 @@ int main(int argc,const char **argv) {
     }
     printf(" \n");
     for(int s=10;s>0 && running;s--){
+        printf("\rstarting in %2d seconds",s/2);
+        fflush(stdout);
+        usleep(500);
         char *pressed = keyboard_get_pressed(keyboard);
         if(pressed != NULL) {
             free(pressed);
             break;
         }
-        printf("\rstarting in %2d seconds",s/2);
-        fflush(stdout);
-        usleep(500);
     }
     int frame=0;
     double fps;
@@ -440,7 +447,7 @@ int main(int argc,const char **argv) {
             scene_manager_draw_on_viewport(manager,vpp);
             // Render the vpp
             viewport_renderer(vpp);
-            // scene_manager_do_collisions(manager);
+            scene_manager_do_collisions(manager);
             scene_manager_remove_dead_shapes(manager);
             last_update=d0;
             long long t1 = nanos()/1000;
@@ -448,7 +455,7 @@ int main(int argc,const char **argv) {
             fps=frame/(t1-t0);
             frame++;
         }
-        usleep(10*1000);
+        usleep(1000);
 
         if(pressed != NULL){
             free(pressed);

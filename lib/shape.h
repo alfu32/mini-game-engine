@@ -4,6 +4,7 @@
     struct Shape {
         int x;
         int y;
+        int z;
         char* content;
     };
 

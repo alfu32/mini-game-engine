@@ -67,6 +67,7 @@
         if (shape == NULL) {
             r->x=0;
             r->y=0;
+            r->z=0;
             r->width=-1;
             r->height=-1;
             return r;
@@ -77,6 +78,7 @@
         struct ClientRect rect={.x=shape->x,.y=shape->y,.width=shapeWidth,.height=shapeHeight};
             r->x=shape->x;
             r->y=shape->y;
+            r->z=shape->z;
             r->width=shapeWidth;
             r->height=shapeHeight;
         return r;
@@ -94,22 +96,26 @@
     int client_rect__intersects(const struct ClientRect* rect1, const struct ClientRect* rect2) {
         int x1 = rect1->x;
         int y1 = rect1->y;
+        int z1 = rect1->z;
         int x2 = x1 + rect1->width;
         int y2 = y1 + rect1->height;
 
         int x3 = rect2->x;
         int y3 = rect2->y;
+        int z3 = rect2->z;
         int x4 = x3 + rect2->width;
         int y4 = y3 + rect2->height;
         
-        return client_rect__contains_point(rect1,x3,y3) 
+        return z1 == z3 && (
+            client_rect__contains_point(rect1,x3,y3) 
             || client_rect__contains_point(rect1,x4,y3) 
             || client_rect__contains_point(rect1,x4,y4) 
             || client_rect__contains_point(rect1,x3,y4) 
             || client_rect__contains_point(rect2,x1,y1) 
             || client_rect__contains_point(rect2,x2,y1) 
             || client_rect__contains_point(rect2,x2,y2) 
-            || client_rect__contains_point(rect2,x1,y2);
+            || client_rect__contains_point(rect2,x1,y2)
+            );
     }
 
 #endif
