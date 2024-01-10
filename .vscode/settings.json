@@ -25,6 +25,7 @@
         "utility": "c",
         "typeinfo": "c",
         "viewport.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "shape.h": "c"
     }
 }

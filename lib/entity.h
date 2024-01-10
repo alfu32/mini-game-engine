@@ -28,6 +28,7 @@
         int life;
         int power;
         int collision;
+        int team;
         char color;
         char background;
         ShapeTransform next;

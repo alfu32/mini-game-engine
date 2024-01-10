@@ -81,7 +81,7 @@ int main() {
 
         }
         /// free(status->content);
-        shape_set_fmt(status,":::GAME::: [%c] x:%6d y:%6d,frame:%8d ",key, shape->x,shape->y,count);
+        shape__set_content_fmt(status,":::GAME::: [%c] x:%6d y:%6d,frame:%8d ",key, shape->x,shape->y,count);
         // Initialize and clear the vpp buffer
         viewport_clear(vpp);
         viewport_shape_draw(vpp, shape,1,0);

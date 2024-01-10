@@ -47,16 +47,18 @@
                 for(int j=0;j<i;j++){
                     Entity* ea = manager->entities[i];
                     Entity* eb = manager->entities[j];
-                    ClientRect* a = get_bounding_client_rect(ea->shape);
-                    ClientRect* b = get_bounding_client_rect(eb->shape);
-                    if(ea->collision && eb->collision && client_rect__intersects(a,b)){
-                        EntityCollision cl;
-                        cl.a=ea;
-                        cl.b=eb;
-                        collisions[collision_count++]=cl;
+                    if(ea->team != eb->team && eb->collision != 0 && ea->collision != 0 && ea->shape->z == eb->shape->z ){
+                        ClientRect* a = shape__get_bounding_client_rect(ea->shape);
+                        ClientRect* b = shape__get_bounding_client_rect(eb->shape);
+                        if( client_rect__intersects(a,b)){
+                            EntityCollision cl;
+                            cl.a=ea;
+                            cl.b=eb;
+                            collisions[collision_count++]=cl;
+                        }
+                        free(a);
+                        free(b);
                     }
-                    free(a);
-                    free(b);
                 }
             }
         }
