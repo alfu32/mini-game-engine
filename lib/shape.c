@@ -160,12 +160,12 @@
         int shapeWidth=findMaxLineWidth(shape->content);
         int shapeHeight=countLines(shape->content);
 
-        struct rectangle_t rect={.x=shape->x,.y=shape->y,.z=shape->z,.width=shapeWidth,.height=shapeHeight};
-            r->x=shape->x;
-            r->y=shape->y;
-            r->z=shape->z;
-            r->width=shapeWidth;
-            r->height=shapeHeight;
+        // struct rectangle_t rect={.x=shape->x,.y=shape->y,.z=shape->z,.width=shapeWidth,.height=shapeHeight};
+        r->x=shape->x;
+        r->y=shape->y;
+        r->z=shape->z;
+        r->width=shapeWidth;
+        r->height=shapeHeight;
         return r;
     }
 

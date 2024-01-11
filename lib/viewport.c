@@ -121,15 +121,15 @@
         putchar('\n');
         for (int y = 0; y < viewport->height; y++) {
             putchar('|');
-            int last_color=0;
+            //// int last_color=0;
             for (int x = 0; x < viewport->width; x++) {
-                char colored=0;
+                //// char colored=0;
                 //// if(viewport->backgrounds[y][x]){
                 ////     printf("%s",backgrounds[viewport->backgrounds[y][x]]);
                 ////     colored=1;
                 //// }
                 if(viewport->colors[y][x]){
-                    printf("%s",colors[viewport->colors[y][x]]);
+                    printf("%s",colors[(int)(viewport->colors[y][x])]);
                 }
                 putchar(viewport->buffer[y][x]);
                 if(viewport->colors[y][x] && viewport->colors[y][x] != viewport->colors[y][x+1]){

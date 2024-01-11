@@ -163,7 +163,7 @@
 
         while ((entry = readdir(dir)) != NULL) {
             if (strncmp(entry->d_name, "event", 5) == 0) {
-                char device_path[256];
+                char device_path[280];
                 snprintf(device_path, sizeof(device_path), "/dev/input/%s", entry->d_name);
 
                     printf("checking keyboard  [%s]/[%s] : ", device_path,kb->device_path);
