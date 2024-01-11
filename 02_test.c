@@ -31,6 +31,23 @@ int last_cannon=0;
 int last_counter_cannon=0;
 int last_move=0;
 
+int try_move_ent_x(entity_t* e,int x,int frame,int last_move,char* keys,char key,int clamp_value_min,int clamp_value_max){
+
+    if(frame - last_move > 1){
+        e->shape->x += x;
+        if(e->shape->x < clamp_value_min) {
+            e->shape->x = clamp_value_min;
+        }
+
+        if(e->shape->x > clamp_value_max) {
+            e->shape->x = clamp_value_max;
+        }
+        return frame;
+    } else {
+        return last_move;
+    }
+}
+
 // Define two different 'next' behaviors for the shapes
 shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
     // Handle the key input here
@@ -38,8 +55,10 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
     sh.content=strdup(e->shape->content);
 
     if(keys != NULL){
-
+        /// last_move=try_move_ent_x(e,-1,frame,last_move,keys,'a',0,140);
         if(frame - last_move > 1){
+            last_move=try_move_ent_x(e,-1,frame,last_move,keys,'a',0,140);
+
             if(strchr(keys,'a') != NULL){
                 sh.x-=1;
                 if(sh.x<0){

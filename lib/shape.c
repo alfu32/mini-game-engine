@@ -29,13 +29,17 @@
 
     // Function to allocate memory for a shape
     void shape__init(shape_t* shape, int x, int y, const char* content) {
-        (*shape).x = x;
-        (*shape).y = y;
+        shape->x = x;
+        shape->y = y;
         shape->content = strdup(content);
     }
     void shape__move_to(shape_t* shape,int x,int y){
-        (*shape).x = x;
-        (*shape).y = y;
+        shape->x = x;
+        shape->y = y;
+    }
+    void shape__move_by(shape_t* shape,int x,int y){
+        shape->x += x;
+        shape->y += y;
     }
     // Function to change the content of a shape
     void shape__set(shape_t* shape, const char* newContent) {

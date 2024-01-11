@@ -26,6 +26,7 @@
         "typeinfo": "c",
         "viewport.h": "c",
         "stdarg.h": "c",
-        "shape.h": "c"
+        "shape.h": "c",
+        "numbers": "c"
     }
 }
