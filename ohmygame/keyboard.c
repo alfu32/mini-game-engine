@@ -3,14 +3,13 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include <libevdev-1.0/libevdev/libevdev.h>
     #include <dirent.h>
     #include <fcntl.h>
     #include <unistd.h>
     #include <termios.h>
     #include <linux/input.h>
     #include <linux/input-event-codes.h>
-    #include "keyboard.h"
+    #include "include/keyboard.h"
 
     char map_keycode_to_char(int keycode) {
         switch (keycode) {

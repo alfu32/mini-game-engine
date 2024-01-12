@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/ohmygame
+
+Name: ohmygame
+Description: Your ohmygame Library
+Version: 1.0
+Libs: -L${libdir} -lohmygame
+Cflags: -I${includedir}

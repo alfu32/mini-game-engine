@@ -1,7 +1,7 @@
 #ifndef ENTITY_C
 #define ENTITY_C
-    #include "entity.h"
-    #include "shape.h"
+    #include "include/entity.h"
+    #include "include/shape.h"
     #include <stdlib.h>
     #include <stdarg.h>
 

@@ -1,6 +1,6 @@
 #ifndef RECT_C
 #define RECT_C
-    #include "rect.h"
+    #include "include/rect.h"
     #include <string.h>
     #include <stdlib.h>
     #include <stddef.h>

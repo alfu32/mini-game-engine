@@ -1,4 +1,5 @@
-#include "lib/lib.h"
+// #include "ohmygame/include/ohmygame.h"
+#include <ohmygame/ohmygame.h>
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>

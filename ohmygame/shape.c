@@ -4,8 +4,8 @@
     #include <stdlib.h>
     #include <stdarg.h>
     #include <string.h>
-    #include "rect.h"
-    #include "shape.h"
+    #include "include/rect.h"
+    #include "include/shape.h"
 
     // Function to allocate memory for a shape
     shape_t* shape__new(int x, int y, const char* content) {

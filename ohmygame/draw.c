@@ -1,8 +1,8 @@
 #ifndef DRAW_C
 #define DRAW_C
-    #include "draw.h"
-    #include "viewport.h"
-    #include "shape.h"
+    #include "include/draw.h"
+    #include "include/viewport.h"
+    #include "include/shape.h"
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>

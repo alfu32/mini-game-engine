@@ -1,6 +1,6 @@
 #ifndef KEYS_C
 #define KEYS_C
-#include "keys.h"
+#include "include/keys.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

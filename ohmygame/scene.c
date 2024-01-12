@@ -1,11 +1,11 @@
 #ifndef SCENE_C
 #define SCENE_C
-    #include "scene.h"
-    #include "entity.h"
-    #include "viewport.h"
-    #include "draw.h"
-    #include "keys.h"
-    #include "rect.h"
+    #include "include/scene.h"
+    #include "include/entity.h"
+    #include "include/viewport.h"
+    #include "include/draw.h"
+    #include "include/keys.h"
+    #include "include/rect.h"
     #include <stdlib.h>
     #include <string.h>
 

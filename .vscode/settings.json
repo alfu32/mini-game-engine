@@ -27,6 +27,10 @@
         "viewport.h": "c",
         "stdarg.h": "c",
         "shape.h": "c",
-        "numbers": "c"
+        "numbers": "c",
+        "draw.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c"
     }
 }
