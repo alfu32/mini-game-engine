@@ -98,14 +98,14 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y, "-==>",bullet_behaviour,5,0);
                 bullet->life=200;
                 bullet->power=30;
-                bullet->team=1000;
+                bullet->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet);
 
                 entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+4, "-==>",bullet_behaviour,5,0);
                 bullet2->life=200;
                 bullet2->power=30;
-                bullet2->team=1000;
+                bullet2->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet2);
                 last_cannon=frame;
@@ -117,14 +117,14 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+1, "+",bullet_behaviour,2,0);
                 bullet->life=80;
                 bullet->power=10;
-                bullet->team=1000;
+                bullet->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet);
 
                 entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+3, "+",bullet_behaviour,2,0);
                 bullet2->life=80;
                 bullet2->power=10;
-                bullet2->team=1000;
+                bullet2->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet2);
                 last_counter_cannon=frame;
@@ -136,7 +136,7 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+2, ":",bullet_behaviour,6,0);
                 bullet->life=100;
                 bullet->power=5;
-                bullet->team=1000;
+                bullet->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet);
                 last_bullet=frame;
@@ -198,14 +198,14 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y, "-==>",bullet_behaviour,5,0);
                 bullet->life=200;
                 bullet->power=30;
-                bullet->team=1000;
+                bullet->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet);
 
                 entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+4, "-==>",bullet_behaviour,5,0);
                 bullet2->life=200;
                 bullet2->power=30;
-                bullet2->team=1000;
+                bullet2->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet2);
                 last_cannon1=frame;
@@ -217,14 +217,14 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+1, "+",bullet_behaviour,2,0);
                 bullet->life=80;
                 bullet->power=10;
-                bullet->team=1000;
+                bullet->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet);
 
                 entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+3, "+",bullet_behaviour,2,0);
                 bullet2->life=80;
                 bullet2->power=10;
-                bullet2->team=1000;
+                bullet2->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet2);
                 last_counter_cannon1=frame;
@@ -236,7 +236,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+2, ":",bullet_behaviour,6,0);
                 bullet->life=100;
                 bullet->power=5;
-                bullet->team=1000;
+                bullet->team=1001;
                 // Add entities to the scene
                 scene_manager__add_entity(manager, bullet);
                 last_bullet1=frame;
@@ -260,12 +260,22 @@ shape_t foe_behaviour_next(entity_t* e, int frame, char *keys) {
         sh.y=sh.y+foe_direction;
     }
     if(frame % 5 == 0){
-        entity_t* rocket = entity__new(frame, sh.x-1, sh.y+2, "<==",counter_bullet_behaviour,3,0);
+        entity_t* rocket = entity__new(frame, sh.x-5, sh.y-1, "<==",counter_bullet_behaviour,3,0);
+        rocket->shape->z=0;
         rocket->life=60;
         rocket->power=30;
         rocket->team=1001;
         // Add entities to the scene
         scene_manager__add_entity(manager, rocket);
+
+
+        entity_t* rocket1 = entity__new(frame, sh.x-5, sh.y+5, "<==",counter_bullet_behaviour,3,0);
+        rocket1->shape->z=1;
+        rocket1->life=60;
+        rocket1->power=30;
+        rocket1->team=1001;
+        // Add entities to the scene
+        scene_manager__add_entity(manager, rocket1);
     }
     return sh;
 }
@@ -439,7 +449,7 @@ int main(int argc,const char **argv) {
     baddie->shape->z=0;
     baddie->power=100;
     baddie->life=1000;
-    baddie->team=1001;
+    baddie->team=1000;
 
     // Add entities to the scene
     scene_manager__add_entity(manager, bkg0);
