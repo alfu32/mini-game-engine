@@ -119,10 +119,16 @@
                 int sz = entity->life/100+5;
                 char* info=(char*)malloc(sizeof(char)*(sz+1));
                 snprintf(info,sz,"%4d",entity->life);
-                memset(info+4,'\250',sz-5);
+                memset(info+4,'-',sz-5);
                 info[sz]='\0';
+                char color=2;
+                if(entity->life<200){
+                    color=1;
+                } else if(entity->life<400){
+                    color=3;
+                }
 
-                viewport__draw_text(vp,entity->shape->x,entity->shape->y-1,info,1,1);
+                viewport__draw_text(vp,entity->shape->x,entity->shape->y-1,info,color,1);
                 free(info);
             }
         }
