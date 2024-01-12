@@ -65,7 +65,7 @@
             
             // Add more cases for other keycodes as needed
             
-            default: return '\0'; // Return null character for unknown keycodes
+            default: return keycode?(char)keycode&0x7F:'\xFF'; // Return null character for unknown keycodes
         }
     }
 
