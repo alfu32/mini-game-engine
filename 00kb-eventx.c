@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
-#include "lib/keyboard.h"
-#include "lib/keys.h"
+#include <ohmygame/keyboard.h>
+#include <ohmygame/keys.h>
 
 static volatile int running = 1;
 
