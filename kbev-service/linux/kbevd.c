@@ -47,9 +47,67 @@ void usr2_handler(int signum) {
 }
 
 
+    char map_keycode_to_char(int keycode) {
+        switch (keycode) {
+            case KEY_A: return 'a';
+            case KEY_B: return 'b';
+            case KEY_C: return 'c';
+            case KEY_D: return 'd';
+            case KEY_E: return 'e';
+            case KEY_F: return 'f';
+            case KEY_G: return 'g';
+            case KEY_H: return 'h';
+            case KEY_I: return 'i';
+            case KEY_J: return 'j';
+            case KEY_K: return 'k';
+            case KEY_L: return 'l';
+            case KEY_M: return 'm';
+            case KEY_N: return 'n';
+            case KEY_O: return 'o';
+            case KEY_P: return 'p';
+            case KEY_Q: return 'q';
+            case KEY_R: return 'r';
+            case KEY_S: return 's';
+            case KEY_T: return 't';
+            case KEY_U: return 'u';
+            case KEY_V: return 'v';
+            case KEY_W: return 'w';
+            case KEY_X: return 'x';
+            case KEY_Y: return 'y';
+            case KEY_Z: return 'z';
+            
+            case KEY_1: return '1';
+            case KEY_2: return '2';
+            case KEY_3: return '3';
+            case KEY_4: return '4';
+            case KEY_5: return '5';
+            case KEY_6: return '6';
+            case KEY_7: return '7';
+            case KEY_8: return '8';
+            case KEY_9: return '9';
+            case KEY_0: return '0';
+            
+            case KEY_MINUS: return '-';
+            case KEY_EQUAL: return '=';
+            case KEY_LEFTBRACE: return '[';
+            case KEY_RIGHTBRACE: return ']';
+            case KEY_SEMICOLON: return ';';
+            case KEY_APOSTROPHE: return '\'';
+            case KEY_GRAVE: return '`';
+            case KEY_BACKSLASH: return '\\';
+            case KEY_COMMA: return ',';
+            case KEY_DOT: return '.';
+            case KEY_SLASH: return '/';
+            
+            // Add more cases for other keycodes as needed
+            
+            default: return keycode?(char)keycode&0x7F:'\xFF'; // Return null character for unknown keycodes
+        }
+    }
+
 
 // Function to aggregate key events and return key_states
-int fetch_keyboard_events(unsigned char* key_states,const char* device_path) {
+int fetch_keyboard_events(char* key_states,const char* device_path,unsigned int wait_ms) {
     struct input_event ev;
     int input_fd = open(device_path, O_RDONLY);
     if (input_fd == -1) {
@@ -58,7 +116,7 @@ int fetch_keyboard_events(unsigned char* key_states,const char* device_path) {
         return -1;
     }
     ssize_t bytes_read = read(input_fd, &ev, sizeof(ev));
-    if (bytes_read == sizeof(ev) && ev.type == EV_KEY) {
+    if (bytes_read == sizeof(ev)/* && ev.type == EV_KEY*/) {
         // Check if the key is pressed (value is 1) and output it
         if(ev.code > KEY_MAX) {
             printf("event code %d is out of range\n",ev.code);
@@ -66,7 +124,7 @@ int fetch_keyboard_events(unsigned char* key_states,const char* device_path) {
             return -2;
         }
         if (ev.value == 1) {
-            key_states[ev.code] = ev.value; // Update key state
+            key_states[ev.code] = 1; // Update key state
         } else {
             key_states[ev.code] = 0; // Update key state
         }
@@ -86,7 +144,7 @@ int fetch_keyboard_events_async(unsigned char* key_states,const char* device_pat
     }
     for(int i=0;i<wait_ms;i++){
         ssize_t bytes_read = read(input_fd, &ev, sizeof(ev));
-        if (bytes_read == sizeof(ev) && ev.type == EV_KEY) {
+        if (bytes_read == sizeof(ev)/* && ev.type == EV_KEY*/) {
             // Check if the key is pressed (value is 1) and output it
             if(ev.code > KEY_MAX) {
                 printf("event code %d is out of range\n",ev.code);
@@ -164,13 +222,14 @@ int main(int devices_count,const char **device_files) {
     signal(SIGUSR1, usr1_handler);
     signal(SIGUSR2, usr2_handler);
 
-    unsigned char* key_states=(unsigned char*)malloc(sizeof(unsigned char)*(KEY_MAX + 1) );
+    char* key_states=(char*)malloc(sizeof(char)*(KEY_MAX + 1) );
     disableTerminalOutput();
     int return_value=0;
     while (service_running) {
+        /// int device_result=fetch_keyboard_events_async(key_states, device_files[1],120);
         for(int device_index=1;device_index<devices_count;device_index++){
             const char* device_file=device_files[device_index];
-            int device_result=fetch_keyboard_events_async(key_states, device_file,300);
+            int device_result=fetch_keyboard_events_async(key_states, device_file,120);
             if(device_result != 0){
                 printf("Warning: polling device %s returned error %d",device_file,device_result);
             }
@@ -193,15 +252,14 @@ int main(int devices_count,const char **device_files) {
             }
         }
 
-                printf("\rsome keys were pressed : [");
-                for (short i = 0; i < KEY_MAX; i++) {
-                    if (key_states[i] != 0) {
-                        printf("%c,",i);
-                        fflush(stdout);
-                    }
-                }
-                printf("]          ");
-                fflush(stdout);
+        printf("\rsome keys were pressed : [");
+        for (int code = 0; code < KEY_MAX; code++) {
+            if (key_states[code] != 0) {
+                printf("[%d](%c),",code,map_keycode_to_char(code));
+            }
+        }
+        printf("]          ");
+        fflush(stdout);
         // Close the file
         close(eventX_fd);
     }
