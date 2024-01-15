@@ -32,6 +32,8 @@
         char color;
         char background;
         ShapeTransform next;
+        // should always stay last, it will contain exta fields of derived objects
+        const char data_map[255];
     } entity_t;
 
     entity_t* entity__new(int birthFrame,int x0, int y0, const char* content, ShapeTransform transformFunc,const char color,const char background);

@@ -8,4 +8,6 @@
     #include "entity.h"
     #include "viewport.h"
     #include "draw.h"
+    #include "simulator.h"
+    #include "util.h"
 #endif

@@ -22,7 +22,7 @@
         char* device_path;
     } keyboard_t;
 
-    keyboard_t* keyboard__new();
+    keyboard_t* keyboard__new(const char* device_path);
     int keyboard__device_is_keyboard(keyboard_t *kb,const char *device_path);
     int keyboard__find_keyboard_devices(keyboard_t *kb,char **device_paths);
     int keyboard__refresh(keyboard_t *self);
