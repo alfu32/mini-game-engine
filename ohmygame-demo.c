@@ -25,7 +25,8 @@ shape_t player_behaviour_next(entity_t* e, int frame, char* keys);
 shape_t player1_behaviour_next(entity_t* e, int frame, char* keys);
 shape_t foe_behaviour_next(entity_t* e, int frame, char* keys);
 shape_t bullet_behaviour(entity_t* e, int frame, char* keys);
-shape_t counter_bullet_behaviour(entity_t* e, int frame, char* keys);
+shape_t counter_bullet_behaviour(entity_t *e, int frame, char *keys);
+entity_t * baddie_new();
 shape_t foe_bullet_behaviour(entity_t* e, int frame, char* keys);
 
 int foe_direction=1;
@@ -438,11 +439,7 @@ int main(int argc,const char **argv) {
     player1->power=10;
     player1->life=1000;
     player1->team=1000;
-    entity_t* baddie = entity__new(0, 140, 10, foe_shape,foe_behaviour_next,1,1);
-    baddie->shape->z=0;
-    baddie->power=100;
-    baddie->life=1000;
-    baddie->team=1000;
+    entity_t *baddie = baddie_new();
 
     // Add entities to the scene
     scene_manager__add_entity(manager, bkg0);
@@ -476,6 +473,7 @@ int main(int argc,const char **argv) {
     long long duration;
     long long t0=micros();
     long long last_update=t0;
+    int create_new_baddie=0;
     while(running){
         long long d0=micros();
 
@@ -491,12 +489,24 @@ int main(int argc,const char **argv) {
             // Render the vpp
             viewport__renderer(vpp);
             scene_manager__do_collisions(manager);
+            if(baddie->life<=0){
+                create_new_baddie=1;
+            }
             scene_manager__remove_dead_shapes(manager);
             last_update=d0;
             long long t1 = micros();
             duration=t1-d0;
             fps=frame/(t1-t0);
             frame++;
+
+            if(create_new_baddie){
+                create_new_baddie=0;
+                baddie=baddie_new();
+                scene_manager__add_entity(manager, baddie);
+                entity_t* baddie2=baddie_new();
+                scene_manager__add_entity(manager, baddie2);
+                baddie2->shape->y=15;
+            }
         }
         usleep(1000);
 
@@ -531,3 +541,12 @@ int main(int argc,const char **argv) {
     return 0;
 }
 
+entity_t * baddie_new()
+{
+    entity_t *baddie = entity__new(0, 140, 5, foe_shape, foe_behaviour_next, 1, 1);
+    baddie->shape->z = 0;
+    baddie->power = 100;
+    baddie->life = 1000;
+    baddie->team = 1000;
+    return baddie;
+}
