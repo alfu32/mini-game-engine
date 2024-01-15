@@ -1,5 +1,8 @@
-// #include "ohmygame/include/ohmygame.h"
-#include <ohmygame/ohmygame.h>
+#ifndef usedynlib
+    #include "ohmygame/include/ohmygame.h"
+#else
+    #include <ohmygame/ohmygame.h>
+#endif
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -70,8 +73,8 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'d') != NULL){
                 sh.x+=1;
-                if(sh.x>140){
-                    sh.x=140;
+                if(sh.x>vpp->width-20){
+                    sh.x=vpp->width-20;
                 }
                 last_move=frame;
             }
@@ -86,8 +89,8 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'s') != NULL){
                 sh.y+=1;
-                if(sh.y>40){
-                    sh.y=40;
+                if(sh.y>vpp->height-5){
+                    sh.y=vpp->height-5;
                 }
                 last_move=frame;
             }
@@ -170,8 +173,8 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'l') != NULL){
                 sh.x+=1;
-                if(sh.x>140){
-                    sh.x=140;
+                if(sh.x>vpp->width-20){
+                    sh.x=vpp->width-20;
                 }
                 last_move1=frame;
             }
@@ -186,8 +189,8 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
 
             if(strchr(keys,'k') != NULL){
                 sh.y+=1;
-                if(sh.y>40){
-                    sh.y=40;
+                if(sh.y>vpp->height-5){
+                    sh.y=vpp->height-5;
                 }
                 last_move1=frame;
             }
@@ -251,7 +254,7 @@ shape_t foe_behaviour_next(entity_t* e, int frame, char *keys) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
-    if(sh.y+foe_direction>40){
+    if(sh.y+foe_direction>vpp->height-5){
         foe_direction=-1;
     }else if(sh.y+foe_direction<1){
         foe_direction=1;
@@ -373,16 +376,6 @@ const char* foe_shape="\
   ##\n\
 ";
 
-long long nanos() {
-    struct timespec current_time;
-
-    if (clock_gettime(CLOCK_REALTIME, &current_time) == 0) {
-        long long nanoseconds = current_time.tv_sec * 1000000000LL + current_time.tv_nsec;
-        return nanoseconds;
-    } else {
-        return -1;
-    }
-}
 int main(int argc,const char **argv) {
     printf("\ngot %d arguments\n",argc);
 
@@ -414,23 +407,23 @@ int main(int argc,const char **argv) {
 
 
     // Create a vpp buffer
-    vpp=viewport__new(160,45);
+    vpp=viewport__new(160,43);
 
     // Create a scene manager
     manager = scene_manager__new();
 
     // Create two entities (animated shapes) with different behaviors
-    entity_t* bkg0 = entity__new(0, 160, 20, background,rolling_background_behaviour,2,1);
+    entity_t* bkg0 = entity__new(0, 160, 18, background,rolling_background_behaviour,2,1);
     bkg0->shape->z=-1;
     bkg0->collision=0;
     bkg0->power=0;
     bkg0->team=1;
-    entity_t* bkg1 = entity__new(0, 80, 20, background,rolling_background_behaviour,2,1);
+    entity_t* bkg1 = entity__new(0, 80, 18, background,rolling_background_behaviour,2,1);
     bkg1->shape->z=-1;
     bkg1->collision=0;
     bkg1->power=0;
     bkg1->team=1;
-    entity_t* bkg2 = entity__new(0, 0, 20, background,rolling_background_behaviour,2,1);
+    entity_t* bkg2 = entity__new(0, 0, 18, background,rolling_background_behaviour,2,1);
     bkg2->shape->z=-1;
     bkg2->collision=0;
     bkg2->power=0;
@@ -481,10 +474,10 @@ int main(int argc,const char **argv) {
     int frame=0;
     double fps;
     long long duration;
-    long long t0=nanos()/1000;
+    long long t0=micros();
     long long last_update=t0;
     while(running){
-        long long d0=nanos()/1000;
+        long long d0=micros();
 
         char *pressed = keyboard__fetch_pressed(keyboard);
         if(0 || d0-last_update > 40000){
@@ -500,7 +493,7 @@ int main(int argc,const char **argv) {
             scene_manager__do_collisions(manager);
             scene_manager__remove_dead_shapes(manager);
             last_update=d0;
-            long long t1 = nanos()/1000;
+            long long t1 = micros();
             duration=t1-d0;
             fps=frame/(t1-t0);
             frame++;

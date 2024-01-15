@@ -1,6 +1,7 @@
 #!/bin/bash
 
 full_name="$1"
+params=$@
 file_name=$(basename "$full_name")
 file_name_without_extension="${file_name%.*}"
 #libs=$(pkg-config --cflags --libs ncurses x11 wayland-client libevdev)
@@ -14,11 +15,11 @@ flags="-Wall -fPIC"
 rm -rf build
 mkdir -p build
 
-tcc $flags "$full_name" ohmygame/*.c $libs -o "build/$file_name_without_extension.tcc"
-tcc $flags -static "$full_name" ohmygame/*.c $libs -o "build/$file_name_without_extension.static.tcc"
-gcc $flags "$full_name" ohmygame/*.c $libs -o "build/$file_name_without_extension.gcc"
-gcc $flags -static "$full_name" ohmygame/*.c $libs -o "build/$file_name_without_extension.static.gcc"
-clang $flags "$full_name" ohmygame/*.c $libs -o "build/$file_name_without_extension.clang"
-clang $flags -static "$full_name" ohmygame/*.c $libs -o "build/$file_name_without_extension.static.clang"
+tcc $flags ohmygame/*.c $libs -o "build/$file_name_without_extension.tcc" $params
+tcc $flags -static ohmygame/*.c $libs -o "build/$file_name_without_extension.static.tcc" $params
+gcc $flags ohmygame/*.c $libs -o "build/$file_name_without_extension.gcc" $params
+gcc $flags -static ohmygame/*.c $libs -o "build/$file_name_without_extension.static.gcc" $params
+clang $flags ohmygame/*.c $libs -o "build/$file_name_without_extension.clang" $params
+clang $flags -static ohmygame/*.c $libs -o "build/$file_name_without_extension.static.clang" $params
 ls -la build/$file_name_without_extension*
 
