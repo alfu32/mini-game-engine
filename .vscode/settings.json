@@ -32,6 +32,10 @@
         "stdio.h": "c",
         "string.h": "c",
         "stdlib.h": "c",
-        "keyboard.h": "c"
+        "keyboard.h": "c",
+        "termios.h": "c",
+        "scene.h": "c",
+        "simulator.h": "c",
+        "util.h": "c"
     }
 }
