@@ -380,8 +380,7 @@ const char* foe_shape="\
 
 
 
-entity_t * baddie_new()
-{
+entity_t * baddie_new(){
     entity_t *baddie = entity__new(0, 140, 5, foe_shape, foe_behaviour_next, 1, 1);
     baddie->shape->z = 0;
     baddie->power = 100;
