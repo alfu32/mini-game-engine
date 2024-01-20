@@ -2,6 +2,7 @@
 #define SCENE_H
     #include "entity.h"
     #include "viewport.h"
+    #include "keyboard.h"
     // Define a struct for the scene manager
     typedef struct scene_manager_t {
         entity_t** entities; // Array of pointers to AnimatedShapes
@@ -16,7 +17,7 @@
 
     scene_manager_t* scene_manager__new();
     void scene_manager__add_entity(scene_manager_t* manager, entity_t* entity);
-    void scene_manager__update(scene_manager_t* manager, int currentFrame,char *pressed);
+    void scene_manager__update(scene_manager_t* manager, int currentFrame,keyboard_t *kb);
     void scene_manager__do_collisions(scene_manager_t* manager);
     void scene_manager__remove_dead_shapes(scene_manager_t* manager);
     void scene_manager__draw_on_viewport(scene_manager_t* manager,viewport_t* vpp);

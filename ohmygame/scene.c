@@ -3,6 +3,7 @@
     #include "include/scene.h"
     #include "include/entity.h"
     #include "include/viewport.h"
+    #include "include/keyboard.h"
     #include "include/draw.h"
     #include "include/keys.h"
     #include "include/rect.h"
@@ -26,7 +27,7 @@
     }
 
     // Function to update all entities in the scene
-    void scene_manager__update(scene_manager_t* manager, int currentFrame,char *keys) {
+    void scene_manager__update(scene_manager_t* manager, int currentFrame,keyboard_t *kb) {
         /// unsigned int key = 0x0020;
         /// if (key_is_pressed()) {
         ///     key = key_read();
@@ -34,7 +35,7 @@
         for (int i = 0; i < manager->entities_count; i++) {
             entity_t* entity = manager->entities[i];
             /// shape_t newShape = entity->next(entity, currentFrame, key );
-            shape_t newShape = entity->next(entity, currentFrame, keys );
+            shape_t newShape = entity->next(entity, currentFrame, kb );
             shape__copy(entity->shape, newShape);
         }
     }

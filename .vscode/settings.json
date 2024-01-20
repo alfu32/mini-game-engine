@@ -36,6 +36,7 @@
         "termios.h": "c",
         "scene.h": "c",
         "simulator.h": "c",
-        "util.h": "c"
+        "util.h": "c",
+        "entity.h": "c"
     }
 }

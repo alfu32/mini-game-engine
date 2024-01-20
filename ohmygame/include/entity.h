@@ -1,13 +1,14 @@
 #ifndef ENTITY_H
 #define ENTITY_H
     #include "shape.h"
+    #include "keyboard.h"
     #include <stdlib.h>
     #include <stdarg.h>
     #include <stdio.h>
 
     typedef struct entity_t entity_t;
     // Define a function pointer type for shape transformation
-    typedef shape_t (*ShapeTransform)(struct entity_t*, int, char*);
+    typedef shape_t (*ShapeTransform)(struct entity_t*, int, keyboard_t*);
 
     typedef enum entity_type_t entity_type_t;
 

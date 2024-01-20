@@ -72,6 +72,10 @@
     keyboard_t* keyboard__new(const char* device_path) {
         keyboard_t *keyboard = (keyboard_t *)malloc(sizeof(keyboard_t));
         keyboard->device_path=strdup(device_path);
+        for(int i=0;i<KEY_MAX;i++){
+            keyboard->key_state[i]='\0';
+            keyboard->pressed[i]=0;
+        }
         tcgetattr(STDIN_FILENO, &(keyboard->oldt));
         keyboard->newt = keyboard->oldt;
         keyboard->newt.c_lflag &= ~(ICANON | ECHO);
@@ -190,9 +194,11 @@
                 if (self->ev.value == 0) {
                     //printf("\rKey released: %d\n", map_keycode_to_char(self->ev.code));
                     self->key_state[self->ev.code] = 0;
+                    self->pressed[self->ev.code] = 0;
                 } else if (self->ev.value == 1) {
                     //printf("\rKey pressed: %d\n", map_keycode_to_char(self->ev.code));
                     self->key_state[self->ev.code] = map_keycode_to_char(self->ev.code);
+                    self->pressed[self->ev.code] = self->ev.code;
                 }
                 //fflush(stdout);
             }
@@ -238,6 +244,14 @@
         return 0;
     }
 
+    int keyboard__contains_key_code(keyboard_t *self, const int code){
+        for (int i = 0; i < KEY_MAX; i++) {
+            if (self->pressed[i] == code) {
+                return 1; // Value found, return true
+            }
+        }
+        return 0; // Value not found, return false
+    }
 
     char* keyboard__fetch_pressed(keyboard_t *self) {
         keyboard__refresh(self);

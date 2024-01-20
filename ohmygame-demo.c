@@ -21,13 +21,12 @@ viewport_t* vpp;
 // Create a scene manager
 scene_manager_t* manager;
 // declare behaviours
-shape_t player_behaviour_next(entity_t* e, int frame, char* keys);
-shape_t player1_behaviour_next(entity_t* e, int frame, char* keys);
-shape_t foe_behaviour_next(entity_t* e, int frame, char* keys);
-shape_t bullet_behaviour(entity_t* e, int frame, char* keys);
-shape_t counter_bullet_behaviour(entity_t *e, int frame, char *keys);
-entity_t * baddie_new();
-shape_t foe_bullet_behaviour(entity_t* e, int frame, char* keys);
+shape_t player_behaviour_next(entity_t* e, int frame, keyboard_t* kb);
+shape_t player1_behaviour_next(entity_t* e, int frame, keyboard_t* kb);
+shape_t foe_behaviour_next(entity_t* e, int frame, keyboard_t* kb);
+shape_t bullet_behaviour(entity_t* e, int frame, keyboard_t* kb);
+shape_t counter_bullet_behaviour(entity_t* e, int frame, keyboard_t* kb);
+shape_t foe_bullet_behaviour(entity_t* e, int frame, keyboard_t* kb);
 
 int foe_direction=1;
 
@@ -36,7 +35,7 @@ int last_cannon=0;
 int last_counter_cannon=0;
 int last_move=0;
 
-int try_move_ent_x(entity_t* e,int x,int frame,int last_move,char* keys,char key,int clamp_value_min,int clamp_value_max){
+int try_move_ent_x(entity_t* e,int x,int frame,int last_move,keyboard_t* kb,char key,int clamp_value_min,int clamp_value_max){
 
     if(frame - last_move > 1){
         e->shape->x += x;
@@ -54,17 +53,17 @@ int try_move_ent_x(entity_t* e,int x,int frame,int last_move,char* keys,char key
 }
 
 // Define two different 'next' behaviors for the shapes
-shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
+shape_t player_behaviour_next(entity_t* e, int frame, keyboard_t *kb) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
 
-    if(keys != NULL){
+    if(kb != NULL){
         /// last_move=try_move_ent_x(e,-1,frame,last_move,keys,'a',0,140);
         if(frame - last_move > 1){
-            last_move=try_move_ent_x(e,-1,frame,last_move,keys,'a',0,140);
+            last_move=try_move_ent_x(e,-1,frame,last_move,kb,'a',0,140);
 
-            if(strchr(keys,'a') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_A) != 0){
                 sh.x-=1;
                 if(sh.x<0){
                     sh.x=0;
@@ -72,7 +71,7 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
                 last_move=frame;
             }
 
-            if(strchr(keys,'d') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_D) != 0){
                 sh.x+=1;
                 if(sh.x>vpp->width-20){
                     sh.x=vpp->width-20;
@@ -80,7 +79,7 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
                 last_move=frame;
             }
 
-            if(strchr(keys,'w') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_W) != 0){
                 sh.y-=1;
                 if(sh.y<0){
                     sh.y=0;
@@ -88,7 +87,7 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
                 last_move=frame;
             }
 
-            if(strchr(keys,'s') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_S) != 0){
                 sh.y+=1;
                 if(sh.y>vpp->height-5){
                     sh.y=vpp->height-5;
@@ -97,7 +96,7 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
             }
         }
 
-        if(strchr(keys,'z') != NULL){
+        if(keyboard__contains_key_code(kb,KEY_Z) != 0){
             if(frame - last_cannon > 3){
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y, "-==>",bullet_behaviour,5,0);
                 bullet->life=200;
@@ -116,7 +115,7 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
             }
         }
 
-        if(strchr(keys,'x') != NULL){
+        if(keyboard__contains_key_code(kb,KEY_Z) != 0){
             if(frame - last_counter_cannon > 4){
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+1, "+",bullet_behaviour,2,0);
                 bullet->life=80;
@@ -135,7 +134,7 @@ shape_t player_behaviour_next(entity_t* e, int frame, char *keys) {
             }
         }
 
-        if(strchr(keys,'c') != NULL){
+        if(keyboard__contains_key_code(kb,KEY_C) != 0){
             if(frame - last_bullet > 1){
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+2, ":",bullet_behaviour,6,0);
                 bullet->life=100;
@@ -156,15 +155,15 @@ int last_cannon1=0;
 int last_counter_cannon1=0;
 int last_move1=0;
 // Define two different 'next' behaviors for the shapes
-shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
+shape_t player1_behaviour_next(entity_t* e, int frame, keyboard_t *kb) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
 
-    if(keys != NULL){
+    if(kb != NULL){
 
         if(frame - last_move1 > 1){
-            if(strchr(keys,'j') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_J) != 0){
                 sh.x-=1;
                 if(sh.x<0){
                     sh.x=0;
@@ -172,7 +171,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
                 last_move1=frame;
             }
 
-            if(strchr(keys,'l') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_L) != 0){
                 sh.x+=1;
                 if(sh.x>vpp->width-20){
                     sh.x=vpp->width-20;
@@ -180,7 +179,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
                 last_move1=frame;
             }
 
-            if(strchr(keys,'i') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_I) != 0){
                 sh.y-=1;
                 if(sh.y<0){
                     sh.y=0;
@@ -188,7 +187,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
                 last_move1=frame;
             }
 
-            if(strchr(keys,'k') != NULL){
+            if(keyboard__contains_key_code(kb,KEY_K) != 0){
                 sh.y+=1;
                 if(sh.y>vpp->height-5){
                     sh.y=vpp->height-5;
@@ -197,7 +196,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
             }
         }
 
-        if(strchr(keys,'n') != NULL){
+        if(keyboard__contains_key_code(kb,KEY_N) != 0){
             if(frame - last_cannon1 > 3){
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y, "-==>",bullet_behaviour,5,0);
                 bullet->life=200;
@@ -216,7 +215,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
             }
         }
 
-        if(strchr(keys,'m') != NULL){
+        if(keyboard__contains_key_code(kb,KEY_M) != 0){
             if(frame - last_counter_cannon1 > 4){
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+1, "+",bullet_behaviour,2,0);
                 bullet->life=80;
@@ -235,7 +234,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
             }
         }
 
-        if(strchr(keys,',') != NULL){
+        if(keyboard__contains_key_code(kb,KEY_COMMA) != 0){
             if(frame - last_bullet1 > 1){
                 entity_t* bullet = entity__new(frame, sh.x+7, sh.y+2, ":",bullet_behaviour,6,0);
                 bullet->life=100;
@@ -251,7 +250,7 @@ shape_t player1_behaviour_next(entity_t* e, int frame, char *keys) {
 }
 
 
-shape_t foe_behaviour_next(entity_t* e, int frame, char *keys) {
+shape_t foe_behaviour_next(entity_t* e, int frame, keyboard_t *kb) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
@@ -283,7 +282,7 @@ shape_t foe_behaviour_next(entity_t* e, int frame, char *keys) {
     }
     return sh;
 }
-shape_t bullet_behaviour(entity_t* e, int frame, char *keys) {
+shape_t bullet_behaviour(entity_t* e, int frame, keyboard_t *kb) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
@@ -293,7 +292,7 @@ shape_t bullet_behaviour(entity_t* e, int frame, char *keys) {
     }
     return sh;
 }
-shape_t counter_bullet_behaviour(entity_t* e, int frame, char *keys) {
+shape_t counter_bullet_behaviour(entity_t* e, int frame, keyboard_t *kb) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
@@ -306,7 +305,7 @@ shape_t counter_bullet_behaviour(entity_t* e, int frame, char *keys) {
     }
     return sh;
 }
-shape_t rolling_background_behaviour(entity_t* e, int frame, char *keys) {
+shape_t rolling_background_behaviour(entity_t* e, int frame, keyboard_t *kb) {
     // Handle the key input here
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
@@ -408,7 +407,7 @@ int main(int argc,const char **argv) {
 
 
     // Create a vpp buffer
-    vpp=viewport__new(160,43);
+    vpp=viewport__new(160,40);
 
     // Create a scene manager
     manager = scene_manager__new();
@@ -458,15 +457,15 @@ int main(int argc,const char **argv) {
         entity__print(manager->entities[k]);
     }
     printf(" \n");
+        usleep(2000);
     for(int s=10;s>0 && running;s--){
-        printf("\rstarting in %2d seconds",s/2);
-        fflush(stdout);
-        usleep(500);
-        char *pressed = keyboard__fetch_pressed(keyboard);
-        if(pressed != NULL) {
-            free(pressed);
-            break;
+        keyboard__refresh(keyboard);
+        printf("\rstarting in %2d seconds; keyboard: ",s/2);
+        for(int i=0;i<KEY_MAX;i++){
+            printf("%d,",keyboard->pressed[i]);
         }
+        fflush(stdout);
+        usleep(2000);
     }
     int frame=0;
     double fps;
@@ -477,13 +476,13 @@ int main(int argc,const char **argv) {
     while(running){
         long long d0=micros();
 
-        char *pressed = keyboard__fetch_pressed(keyboard);
+        keyboard__refresh(keyboard);
         if(0 || d0-last_update > 40000){
             terminal_clear();
             shape__set_content_fmt(status,":::GAME::: x:%6d y:%6d,frame:%8d, objects:%2d, d: %lld, fpns: %lld", shape->x,shape->y,frame,manager->entities_count,duration,fps);
             // Initialize and clear the vpp buffer
             viewport__clear(vpp);
-            scene_manager__update(manager, frame,pressed);
+            scene_manager__update(manager, frame,keyboard);
             viewport_shape_draw(vpp, status,3,0);
             scene_manager__draw_on_viewport(manager,vpp);
             // Render the vpp
@@ -509,10 +508,6 @@ int main(int argc,const char **argv) {
             }
         }
         usleep(1000);
-
-        if(pressed != NULL){
-            free(pressed);
-        }
     }
     printf(" final score \n");
     for(int k=0;k<manager->entities_count;k++){

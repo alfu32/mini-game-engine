@@ -15,6 +15,7 @@
         // if a key is not pressed the value of the corresponding key_code is 0
         // if a key is pressed the value of the corresponding key_code is the corresponding char
         char key_state[KEY_MAX];
+        int pressed[KEY_MAX];
         // fd of the keyboard device
         int device;
         struct input_event ev;
@@ -27,6 +28,7 @@
     int keyboard__find_keyboard_devices(keyboard_t *kb,char **device_paths);
     int keyboard__refresh(keyboard_t *self);
     int keyboard__contains_keys(keyboard_t *self, const char *keys);
+    int keyboard__contains_key_code(keyboard_t *self, const int code);
     // return NULL when no key is pressed
     char* keyboard__fetch_pressed(keyboard_t *self);
     int keyboard__deinit(keyboard_t *self);

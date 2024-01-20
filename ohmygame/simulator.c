@@ -24,7 +24,7 @@ int run(simulator_t* sim) {
             sim->on_before_frame(sim,frame);
 
             viewport__clear(sim->viewport);
-            scene_manager__update(sim->manager, frame,pressed);
+            scene_manager__update(sim->manager, frame,sim->keyboard);
             /// viewport_shape_draw(sim->viewport, status,3,0);
             scene_manager__draw_on_viewport(sim->manager,sim->viewport);
             // Render the vpp
