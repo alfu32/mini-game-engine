@@ -27,6 +27,8 @@ shape_t foe_behaviour_next(entity_t* e, int frame, keyboard_t* kb);
 shape_t bullet_behaviour(entity_t* e, int frame, keyboard_t* kb);
 shape_t counter_bullet_behaviour(entity_t* e, int frame, keyboard_t* kb);
 shape_t foe_bullet_behaviour(entity_t* e, int frame, keyboard_t* kb);
+entity_t * baddie_new();
+
 
 int foe_direction=1;
 
@@ -376,6 +378,18 @@ const char* foe_shape="\
   ##\n\
 ";
 
+
+
+entity_t * baddie_new()
+{
+    entity_t *baddie = entity__new(0, 140, 5, foe_shape, foe_behaviour_next, 1, 1);
+    baddie->shape->z = 0;
+    baddie->power = 100;
+    baddie->life = 1000;
+    baddie->team = 1000;
+    return baddie;
+}
+
 int main(int argc,const char **argv) {
     printf("\ngot %d arguments\n",argc);
 
@@ -534,14 +548,4 @@ int main(int argc,const char **argv) {
     printf(" - done \n");
     sleep(1);
     return 0;
-}
-
-entity_t * baddie_new()
-{
-    entity_t *baddie = entity__new(0, 140, 5, foe_shape, foe_behaviour_next, 1, 1);
-    baddie->shape->z = 0;
-    baddie->power = 100;
-    baddie->life = 1000;
-    baddie->team = 1000;
-    return baddie;
 }
