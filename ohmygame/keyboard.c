@@ -245,12 +245,7 @@
     }
 
     int keyboard__contains_key_code(keyboard_t *self, const int code){
-        for (int i = 0; i < KEY_MAX; i++) {
-            if (self->pressed[i] == code) {
-                return 1; // Value found, return true
-            }
-        }
-        return 0; // Value not found, return false
+        return code>0 && code<KEY_MAX && self->pressed[code] != 0;
     }
 
     char* keyboard__fetch_pressed(keyboard_t *self) {
