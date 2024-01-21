@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
         close(pipefd[0]);
 
         // Iterate through input files and write their content into the pipe
-        for (int i = 1; i < argc - 1; i++) {
+        for (int i = 1; i < argc - 2; i++) {
             int input_fd = open(argv[i], O_RDONLY);
             if (input_fd == -1) {
                 perror("open");
