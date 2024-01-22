@@ -37,6 +37,7 @@
         "scene.h": "c",
         "simulator.h": "c",
         "util.h": "c",
-        "entity.h": "c"
+        "entity.h": "c",
+        "input.h": "c"
     }
 }
