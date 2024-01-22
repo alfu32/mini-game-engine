@@ -5,9 +5,8 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/wait.h> // Include this header for wait function
-#include <linux/input.h>
 
-#define BUFFER_SIZE sizeof(struct input_event)
+#define BUFFER_SIZE 1024
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
@@ -65,29 +64,14 @@ int main(int argc, char *argv[]) {
             }
 
             char buffer[BUFFER_SIZE];
-            ssize_t bytes_read = read(input_fd, buffer, BUFFER_SIZE);
+            ssize_t bytes_read;
 
-            if ( bytes_read == BUFFER_SIZE) {
-
-                struct input_event *ev = (struct input_event *)(&buffer);
-                printf("from file %s read key %d output %s\n", argv[i], ev->code, argv[argc - 1]);
-
+            while ((bytes_read = read(input_fd, buffer, BUFFER_SIZE)) > 0) {
                 ssize_t bytes_written = write(pipefd[1], buffer, bytes_read);
                 if (bytes_written == -1) {
-                    perror("output write error");
+                    perror("write");
                     return 1;
                 }
-            } else if (bytes_read == -1) {
-                if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                    // No data available right now, continue
-                    usleep(1000); // Sleep for a short time to avoid busy-waiting
-                } else {
-                    // Handle other errors
-                    printf("%s");
-                    perror("Read error");
-                }
-            } else if (bytes_read == 0) {
-                // End of file reached, close the input and output files and move to the next
             }
 
             close(input_fd);

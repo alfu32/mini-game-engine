@@ -61,10 +61,11 @@ function main(){
 
         rm -rf events
         for device in $input_devices; do
-          cat $device >> events
+          cat $device > events
+          sleep 0.125
         done
         rm -rf read.lock
-        sleep 0.04
+        sleep 0.125
         # cat input_devices.lst
       fi
   done
