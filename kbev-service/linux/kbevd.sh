@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Function to detect input devices and return a list
-get_keyboard_input_devices_list() {
+function get_keyboard_input_devices_list() {
   # initialize a list of input devices full paths
   input_devices_list=()
   # populate in
@@ -12,13 +12,35 @@ get_keyboard_input_devices_list() {
   done
   echo "${input_devices_list[@]}"
 }
+function start_cat {
+  local input_devices="$1"
+  IFS=$' '
+  for device in $input_devices; do
+    # ../.././read-event $device
+    cat -u $device $device > events &
+  done
+  IFS=$' \t\n'
+}
+function end_cat {
+  local cat_processes
+  cat_processes=$(ps -eo cmd,pid | egrep "^cat -u /dev/input/event[0-9][0-9]*")
+  IFS=$'\n'
+  ## rm -rf events
+  for process in $cat_processes; do
+    echo "killing proc $(echo "$process" | grep -oP '[0-9]+$'), launch_cmd = $process"
+    kill -SIGTERM $(echo "$process" | grep -oP '[0-9]+$')
+  done
+  IFS=$' \t\n'
+}
 
 service_running=true
 # Function to handle SIGINT (Ctrl+C)
-interrupt_handler() {
+function interrupt_handler {
+  echo ""
   echo "Received Ctrl+C. Cleaning up and exiting..."
   # Add your cleanup code here if needed
   service_running=false
+  end_cat
   exit 1
 }
 
@@ -35,47 +57,33 @@ function main(){
 
   #ExecStartPre
 
-  input_devices=$(get_keyboard_input_devices_list)
-  echo $input_devices > input_devices.lst
-  echo "detected input devices : $input_devices"
-  echo "configuring service : "
-  chmod 777 input_devices.lst
-  touch events
-  chmod 777 events
-  rm -rf read.lock
-  ls -la
-
-  # Disable echoing
-  stty -echo
 
   #ExecStart
   while $service_running; do
-      if [ -f read.lock ]
-      then
-        #nothing
-        touch service.is.blocked
-        sleep 0.01
-      else
-        rm -rf service.is.blocked
-        touch read.lock
 
-        rm -rf events
-        for device in $input_devices; do
-          cat $device > events
-          sleep 0.125
-        done
-        rm -rf read.lock
-        sleep 0.125
-        # cat input_devices.lst
-      fi
+    input_devices=$(get_keyboard_input_devices_list)
+    echo $input_devices > input_devices.lst
+    echo "detected input devices : $input_devices"
+    echo "configuring service : "
+    chmod 777 input_devices.lst
+    touch events
+    chmod 777 events
+
+    echo "starting cat : "
+    start_cat "$input_devices"
+    echo "waiting 1 hour : "
+    sleep 3600
+    end_cat
+    ls -la events
+    echo "cycle done ::::::::::::::::::::::::::::::::: $(date) "
+    echo "" > events
   done
-
   #ExecStop=
 
   # Enable echoing
-  stty echo
+  # stty echo
   echo "keyboard event service exited"
-  cd $current
+  cd "$current" || exit
 
 }
 
