@@ -299,8 +299,8 @@ shape_t counter_bullet_behaviour(entity_t* e, int frame, keyboard_t *kb) {
     shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
     sh.content=strdup(e->shape->content);
     if(frame % 1 == 0){
-        sh.x=sh.x-1;
-        e->life=e->life-1;
+        sh.x=sh.x-2;
+        e->life=e->life-2;
     }
     if(frame % 2 == 0){
         sh.z=!sh.z;
@@ -520,7 +520,7 @@ int main(int argc,const char **argv) {
                 baddie2->shape->y=15;
             }
         }
-        usleep(1000);
+        usleep(500);
     }
     printf(" final score \n");
     for(int k=0;k<manager->entities_count;k++){
