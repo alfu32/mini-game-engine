@@ -38,6 +38,7 @@
         "simulator.h": "c",
         "util.h": "c",
         "entity.h": "c",
-        "input.h": "c"
+        "input.h": "c",
+        "ohmygame.h": "c"
     }
 }

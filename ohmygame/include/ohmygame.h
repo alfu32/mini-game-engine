@@ -10,4 +10,5 @@
     #include "draw.h"
     #include "simulator.h"
     #include "util.h"
+    #include "macros-behaviour.h"
 #endif

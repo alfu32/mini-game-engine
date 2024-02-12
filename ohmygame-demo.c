@@ -12,6 +12,7 @@
 #include <time.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
+    #include "ohmygame-demo-lib.h"
 
 
 
@@ -32,10 +33,10 @@ entity_t * baddie_new();
 
 int foe_direction=1;
 
-int last_bullet=0;
-int last_cannon=0;
-int last_counter_cannon=0;
-int last_move=0;
+int last_bullet[10];
+int last_cannon[10];
+int last_counter_cannon[10];
+int last_move[10];
 
 int try_move_ent_x(entity_t* e,int x,int frame,int last_move,keyboard_t* kb,char key,int clamp_value_min,int clamp_value_max){
 
@@ -61,101 +62,35 @@ shape_t player_behaviour_next(entity_t* e, int frame, keyboard_t *kb) {
     sh.content=strdup(e->shape->content);
 
     if(kb != NULL){
-        /// last_move=try_move_ent_x(e,-1,frame,last_move,keys,'a',0,140);
-        if(frame - last_move > 1){
-            last_move=try_move_ent_x(e,-1,frame,last_move,kb,'a',0,140);
+        rectangle_t* shr = shape__get_bounding_client_rect(e->shape);
+        int shrw=shr->width;
+        free(shr);
 
-            if(keyboard__contains_key_code(kb,KEY_A) != 0){
-                sh.x-=1;
-                if(sh.x<0){
-                    sh.x=0;
-                }
-                last_move=frame;
-            }
-
-            if(keyboard__contains_key_code(kb,KEY_D) != 0){
-                sh.x+=1;
-                if(sh.x>vpp->width-20){
-                    sh.x=vpp->width-20;
-                }
-                last_move=frame;
-            }
-
-            if(keyboard__contains_key_code(kb,KEY_W) != 0){
-                sh.y-=1;
-                if(sh.y<0){
-                    sh.y=0;
-                }
-                last_move=frame;
-            }
-
-            if(keyboard__contains_key_code(kb,KEY_S) != 0){
-                sh.y+=1;
-                if(sh.y>vpp->height-5){
-                    sh.y=vpp->height-5;
-                }
-                last_move=frame;
-            }
+        if(frame - last_move[0] > 1) {
+            BEHAVIOUR_MOVE_LEFT(sh.x,0,kb, KEY_A,last_move[0])
+            BEHAVIOUR_MOVE_RIGHT(sh.x,vpp->width-20,kb, KEY_D,last_move[0])
+            BEHAVIOUR_MOVE_LEFT(sh.y,0,kb, KEY_W, last_move[0])
+            BEHAVIOUR_MOVE_RIGHT(sh.y,vpp->height-5,kb, KEY_S, last_move[0])
         }
 
-        if(keyboard__contains_key_code(kb,KEY_Z) != 0){
-            if(frame - last_cannon > 3){
-                entity_t* bullet = entity__new(frame, sh.x+7, sh.y, "-==>",bullet_behaviour,5,0);
-                bullet->life=200;
-                bullet->power=30;
-                bullet->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet);
+        int dud;
+        dud=last_cannon[0];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y-1, kb, KEY_Z,200,30,1001,dud,bullet_behaviour)
+        dud=last_cannon[0];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y, kb, KEY_Z,200,30,1001,dud,bullet_behaviour)
+        dud=last_cannon[0];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y+4, kb, KEY_Z,200,30,1001,dud,bullet_behaviour)
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y+5, kb, KEY_Z,200,30,1001,last_cannon[0],bullet_behaviour)
 
-                entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+4, "-==>",bullet_behaviour,5,0);
-                bullet2->life=200;
-                bullet2->power=30;
-                bullet2->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet2);
-                last_cannon=frame;
-            }
-        }
+        dud=last_counter_cannon[0];
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+1, kb, KEY_X,200,30,1001,dud,bullet_behaviour)
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+3, kb, KEY_X,200,30,1001,last_counter_cannon[0],bullet_behaviour)
 
-        if(keyboard__contains_key_code(kb,KEY_Z) != 0){
-            if(frame - last_counter_cannon > 4){
-                entity_t* bullet = entity__new(frame, sh.x+7, sh.y+1, "+",bullet_behaviour,2,0);
-                bullet->life=80;
-                bullet->power=10;
-                bullet->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet);
-
-                entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+3, "+",bullet_behaviour,2,0);
-                bullet2->life=80;
-                bullet2->power=10;
-                bullet2->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet2);
-                last_counter_cannon=frame;
-            }
-        }
-
-        if(keyboard__contains_key_code(kb,KEY_C) != 0){
-            if(frame - last_bullet > 1){
-                entity_t* bullet = entity__new(frame, sh.x+7, sh.y+2, ":",bullet_behaviour,6,0);
-                bullet->life=100;
-                bullet->power=5;
-                bullet->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet);
-                last_bullet=frame;
-            }
-        }
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+2, kb, KEY_C,200,30,1001,last_bullet[0],bullet_behaviour)
     }
     return sh;
 }
 
-
-int last_bullet1=0;
-int last_cannon1=0;
-int last_counter_cannon1=0;
-int last_move1=0;
 // Define two different 'next' behaviors for the shapes
 shape_t player1_behaviour_next(entity_t* e, int frame, keyboard_t *kb) {
     // Handle the key input here
@@ -163,90 +98,65 @@ shape_t player1_behaviour_next(entity_t* e, int frame, keyboard_t *kb) {
     sh.content=strdup(e->shape->content);
 
     if(kb != NULL){
+        rectangle_t* shr = shape__get_bounding_client_rect(e->shape);
+        int shrw=shr->width;
+        free(shr);
 
-        if(frame - last_move1 > 1){
-            if(keyboard__contains_key_code(kb,KEY_J) != 0){
-                sh.x-=1;
-                if(sh.x<0){
-                    sh.x=0;
-                }
-                last_move1=frame;
-            }
-
-            if(keyboard__contains_key_code(kb,KEY_L) != 0){
-                sh.x+=1;
-                if(sh.x>vpp->width-20){
-                    sh.x=vpp->width-20;
-                }
-                last_move1=frame;
-            }
-
-            if(keyboard__contains_key_code(kb,KEY_I) != 0){
-                sh.y-=1;
-                if(sh.y<0){
-                    sh.y=0;
-                }
-                last_move1=frame;
-            }
-
-            if(keyboard__contains_key_code(kb,KEY_K) != 0){
-                sh.y+=1;
-                if(sh.y>vpp->height-5){
-                    sh.y=vpp->height-5;
-                }
-                last_move1=frame;
-            }
+        if(frame - last_move[1] > 1){
+            BEHAVIOUR_MOVE_LEFT(sh.x,0,kb, KEY_J,last_move[1])
+            BEHAVIOUR_MOVE_RIGHT(sh.x,vpp->width-20,kb, KEY_L,last_move[1])
+            BEHAVIOUR_MOVE_LEFT(sh.y,0,kb, KEY_I, last_move[1])
+            BEHAVIOUR_MOVE_RIGHT(sh.y,vpp->height-5,kb, KEY_K, last_move[1])
         }
+        int dud;
+        dud=last_cannon[1];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y-1, kb, KEY_N,200,30,1001,dud,bullet_behaviour)
+        dud=last_cannon[1];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y, kb, KEY_N,200,30,1001,dud,bullet_behaviour)
+        dud=last_cannon[1];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y+4, kb, KEY_N,200,30,1001,dud,bullet_behaviour)
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y+5, kb, KEY_N,200,30,1001,last_cannon[1],bullet_behaviour)
 
-        if(keyboard__contains_key_code(kb,KEY_N) != 0){
-            if(frame - last_cannon1 > 3){
-                entity_t* bullet = entity__new(frame, sh.x+7, sh.y, "-==>",bullet_behaviour,5,0);
-                bullet->life=200;
-                bullet->power=30;
-                bullet->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet);
+        dud=last_counter_cannon[1];
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+1, kb, KEY_M,200,30,1001,dud,bullet_behaviour)
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+3, kb, KEY_M,200,30,1001,last_counter_cannon[1],bullet_behaviour)
 
-                entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+4, "-==>",bullet_behaviour,5,0);
-                bullet2->life=200;
-                bullet2->power=30;
-                bullet2->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet2);
-                last_cannon1=frame;
-            }
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+2, kb, KEY_COMMA,200,30,1001,last_bullet[1],bullet_behaviour)
+    }
+    return sh;
+}
+
+// Define two different 'next' behaviors for the shapes
+shape_t player2_behaviour_next(entity_t* e, int frame, keyboard_t *kb) {
+    // Handle the key input here
+    shape_t sh = {e->shape->x,e->shape->y,e->shape->z,""};
+    sh.content=strdup(e->shape->content);
+
+    if(kb != NULL) {
+        rectangle_t* shr = shape__get_bounding_client_rect(e->shape);
+        int shrw=shr->width;
+        free(shr);
+
+        if(frame - last_move[2] > 1) {
+            BEHAVIOUR_MOVE_LEFT(sh.x,0,kb, KEY_LEFT,last_move[2])
+            BEHAVIOUR_MOVE_RIGHT(sh.x,vpp->width-20,kb, KEY_RIGHT,last_move[2])
+            BEHAVIOUR_MOVE_LEFT(sh.y,0,kb, KEY_UP, last_move[2])
+            BEHAVIOUR_MOVE_RIGHT(sh.y,vpp->height-5,kb, KEY_DOWN, last_move[2])
         }
+        int dud;
+        dud=last_cannon[2];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y-1, kb, KEY_HOME,200,30,1001,dud,bullet_behaviour)
+        dud=last_cannon[2];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y, kb, KEY_HOME,200,30,1001,dud,bullet_behaviour)
+        dud=last_cannon[2];
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y+4, kb, KEY_HOME,200,30,1001,dud,bullet_behaviour)
+        BEHAVIOUR_FIRE_PROJECTILE( "-==>" , sh.x+shrw, sh.y+5, kb, KEY_HOME,200,30,1001,last_cannon[2],bullet_behaviour)
 
-        if(keyboard__contains_key_code(kb,KEY_M) != 0){
-            if(frame - last_counter_cannon1 > 4){
-                entity_t* bullet = entity__new(frame, sh.x+7, sh.y+1, "+",bullet_behaviour,2,0);
-                bullet->life=80;
-                bullet->power=10;
-                bullet->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet);
+        dud=last_counter_cannon[2];
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+1, kb, KEY_END,200,30,1001,dud,bullet_behaviour)
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+3, kb, KEY_END,200,30,1001,last_counter_cannon[2],bullet_behaviour)
 
-                entity_t* bullet2 = entity__new(frame, sh.x+7, sh.y+3, "+",bullet_behaviour,2,0);
-                bullet2->life=80;
-                bullet2->power=10;
-                bullet2->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet2);
-                last_counter_cannon1=frame;
-            }
-        }
-
-        if(keyboard__contains_key_code(kb,KEY_COMMA) != 0){
-            if(frame - last_bullet1 > 1){
-                entity_t* bullet = entity__new(frame, sh.x+7, sh.y+2, ":",bullet_behaviour,6,0);
-                bullet->life=100;
-                bullet->power=5;
-                bullet->team=1001;
-                // Add entities to the scene
-                scene_manager__add_entity(manager, bullet);
-                last_bullet1=frame;
-            }
-        }
+        BEHAVIOUR_FIRE_PROJECTILE( "+" , sh.x+shrw, sh.y+2, kb, KEY_PAGEUP,200,30,1001,last_bullet[2],bullet_behaviour)
     }
     return sh;
 }
@@ -336,31 +246,31 @@ void signalHandler(int signum) {
     running=0;
 }
 const char* background="\
-                                                                       \n\
-               *                                                       \n\
-        *                         .                                    \n\
-                *                |                    *                \n\
-         *           *          **                                     \n\
-                                **                                     \n\
-                         *      **                                     \n\
-          .                    +--+                                    \n\
-                               |  |                                    \n\
-                               |  |                               .    \n\
-                               |  |          *                         \n\
- .           ======            |  |                          +-------+ \n\
-         +----------+          |  |                      +---|     # | \n\
-         | ###_____ |        +-+--+-+      .             |   |  #    | \n\
-         | _#__#___ |        |      |                    |   |       | \n\
-         | ____#___ |        |  #   |                    |   |     # | \n\
-         | #______# |        |      |                    +---+-------+ \n\
-         | ___#____ |        |      |                    |           | \n\
-         | ___#_#_# |        |      |        ======================  | \n\
-    +------+_______ |      +-+------+-+         _+--------------+    | \n\
-    |      |_______ |      |   #      |         _| ____________ |    | \n\
-    |      |_______ |      |       #  |         _|              |    | \n\
-    |      |_______ |      |          |     _____| ____________ |    | \n\
-    |      |        |      |          |          |              |    | \n\
-=======================__================___#__========================\n\
+                                                                                \n\
+               *                                                                \n\
+        *                         .                                             \n\
+                *                |                    *                         \n\
+         *           *          **                                              \n\
+                                **                                              \n\
+                         *      **                                              \n\
+          .                    +--+                                             \n\
+                               |  |                                             \n\
+                               |  |                               .             \n\
+                               |  |          *                                  \n\
+ .           ======            |  |                          +-------+          \n\
+         +----------+          |  |                      +---|     # |          \n\
+         | ###_____ |        +-+--+-+      .             |   |  #    |          \n\
+         | _#__#___ |        |      |                    |   |       |          \n\
+         | ____#___ |        |  #   |                    |   |     # |          \n\
+         | #______# |        |      |                    +---+-------+    ---   \n\
+         | ___#____ |        |      |                    |           |   /   \\  \n\
+         | ___#_#_# |        |      |        ======================  |  |     | \n\
+    +------+_______ |      +-+------+-+         _+--------------+    |  |     | \n\
+    |      |_______ |      |   #      |         _| ____________ |    |   \\   /  \n\
+    |      |_______ |      |       #  |         _|              |    |    -+-   \n\
+    |      |_______ |      |          |     _____| ____________ |    |     |    \n\
+    |      |        |      |          |          |              |    |     |    \n\
+=======================__================___#__============================|====\n\
 ";
 const char* ship_shape="\
   \\-\n\
@@ -378,7 +288,22 @@ const char* foe_shape="\
   ##\n\
 ";
 
-
+const char* enterprise="\
+             _____________\n\
+          === NCC 01 D ======\n\
+           ============\n\
+  _____     ###### \n\
+ ========###### \n\
+ \n\
+";
+const char* figure_gaby="\
+GABIGABIGABY\n\
+GA =*  =* BY\n\
+GA    |   BY\n\
+GA  -=_=- BY\n\
+GA        BY\n\
+GABIGABIGABY\n\
+";
 
 entity_t * baddie_new(){
     entity_t *baddie = entity__new(0, 140, 5, foe_shape, foe_behaviour_next, 1, 1);
@@ -420,33 +345,38 @@ int main(int argc,const char **argv) {
 
 
     // Create a vpp buffer
-    vpp=viewport__new(160,40);
+    vpp=viewport__new(180,40);
 
     // Create a scene manager
     manager = scene_manager__new();
 
     // Create two entities (animated shapes) with different behaviors
-    entity_t* bkg0 = entity__new(0, 160, 18, background,rolling_background_behaviour,2,1);
+    entity_t* bkg0 = entity__new(0, 180, 12, background,rolling_background_behaviour,2,1);
     bkg0->shape->z=-1;
     bkg0->collision=0;
     bkg0->power=0;
     bkg0->team=1;
-    entity_t* bkg1 = entity__new(0, 80, 18, background,rolling_background_behaviour,2,1);
+    entity_t* bkg1 = entity__new(0, 90, 12, background,rolling_background_behaviour,2,1);
     bkg1->shape->z=-1;
     bkg1->collision=0;
     bkg1->power=0;
     bkg1->team=1;
-    entity_t* bkg2 = entity__new(0, 0, 18, background,rolling_background_behaviour,2,1);
+    entity_t* bkg2 = entity__new(0, 0, 12, background,rolling_background_behaviour,2,1);
     bkg2->shape->z=-1;
     bkg2->collision=0;
     bkg2->power=0;
     bkg2->team=1;
-    entity_t* player = entity__new(0, 10, 10, ship_shape,player_behaviour_next,4,1);
+    entity_t* player = entity__new(0, 10, 10, enterprise,player_behaviour_next,4,1);
     player->shape->z=0;
     player->power=10;
     player->life=1000;
     player->team=1000;
-    entity_t* player1 = entity__new(0, 10, 10, ship_shape,player1_behaviour_next,5,1);
+    entity_t* player1 = entity__new(0, 10, 22, ship_shape,player1_behaviour_next,5,1);
+    player1->shape->z=1;
+    player1->power=10;
+    player1->life=1000;
+    player1->team=1000;
+    entity_t* player2 = entity__new(0, 10, 36, figure_gaby,player2_behaviour_next,5,1);
     player1->shape->z=1;
     player1->power=10;
     player1->life=1000;
@@ -459,6 +389,7 @@ int main(int argc,const char **argv) {
     scene_manager__add_entity(manager, bkg2);
     scene_manager__add_entity(manager, player);
     scene_manager__add_entity(manager, player1);
+    scene_manager__add_entity(manager, player2);
     scene_manager__add_entity(manager, baddie);
     // Create a shape and draw it on the vpp
     shape_t* shape=shape__new(10,5,"HooHooHooo");
